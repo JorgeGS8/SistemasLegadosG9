@@ -121,20 +121,20 @@
            SET ENVIRONMENT 'COB_SCREEN_EXCEPTIONS' TO 'Y'.
 
            DISPLAY BLANK-SCREEN.
-           DISPLAY "Cajero Automatico UnizarBank"
+           DISPLAY(2 26) "Cajero Automatico UnizarBank"
                WITH FOREGROUND-COLOR IS 1.
 
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
 
-           DISPLAY DIA.
-           DISPLAY "-".
-           DISPLAY MES.
-           DISPLAY "-".
-           DISPLAY ANO.
-           DISPLAY HORAS.
-           DISPLAY ":".
-           DISPLAY MINUTOS.
+           DISPLAY(4 32) DIA.
+           DISPLAY(4 34) "-".
+           DISPLAY(4 35) MES.
+           DISPLAY(4 37) "-".
+           DISPLAY(4 38) ANO.
+           DISPLAY(4 44) HORAS.
+           DISPLAY(4 46) ":".
+           DISPLAY(4 47) MINUTOS.
 
 
 
@@ -213,16 +213,16 @@
            INITIALIZE EURENT-USUARIO.
            INITIALIZE EURDEC-USUARIO.
 
-           DISPLAY "ESC - Finalizar ingreso efectivo".
-           DISPLAY "Ingresar efectivo".
-           DISPLAY "Saldo Actual: ".
+           DISPLAY(24 33) "ESC - Finalizar ingreso efectivo".
+           DISPLAY(8 30) "Ingresar efectivo".
+           DISPLAY(10 19) "Saldo Actual: ".
 
            DISPLAY SALDO-DISPLAY.
 
-           DISPLAY "Por favor,introduzca billetes".
-           DISPLAY "Cantidad introducida:         ".
-           DISPLAY ".".
-           DISPLAY "EUR".
+           DISPLAY(11 19) "Por favor,introduzca billetes".
+           DISPLAY(13 19) "Cantidad introducida:         ".
+           DISPLAY(13 48) ".".
+           DISPLAY(13 52) "EUR".
 
        CONF2.
            ACCEPT ENTRADA-USUARIO ON EXCEPTION
@@ -286,18 +286,18 @@
                TO EURDEC-USUARIO.
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY "Ingresar efectivo".
-           DISPLAY "Se han recibido correctamente:".
-           DISPLAY EURENT-USUARIO.
-           DISPLAY EURDEC-USUARIO.
-           DISPLAY ".".
-           DISPLAY "EUR".
-           DISPLAY "El saldo resultante es de:".
+           DISPLAY(8 30) "Ingresar efectivo".
+           DISPLAY(10 19) "Se han recibido correctamente:".
+           DISPLAY(10 50) EURENT-USUARIO.
+           DISPLAY(10 58) EURDEC-USUARIO.
+           DISPLAY(10 57) ".".
+           DISPLAY(10 61) "EUR".
+           DISPLAY(11 19) "El saldo resultante es de:".
 
            DISPLAY SALDO-DISPLAY-FINAL.
 
 
-           DISPLAY "Enter - Aceptar".
+           DISPLAY(24 33) "Enter - Aceptar".
 
 
            GO TO EXIT-ENTER.
@@ -307,16 +307,16 @@
            CLOSE F-MOVIMIENTOS.
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY "Ha ocurrido un error interno"
+           DISPLAY(9 25) "Ha ocurrido un error interno"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY "Vuelva mas tarde"
+           DISPLAY(11 32) "Vuelva mas tarde"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY "Enter - Aceptar".
+           DISPLAY(24 33) "Enter - Aceptar".
 
        EXIT-ENTER.
-           ACCEPT PRESSED-KEY
+           ACCEPT(24 80) PRESSED-KEY
            IF ENTER-PRESSED
                EXIT PROGRAM
            ELSE
