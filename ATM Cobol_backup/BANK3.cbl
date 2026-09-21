@@ -224,19 +224,19 @@
            SET ENVIRONMENT 'COB_SCREEN_ESC'        TO 'Y'
 
            DISPLAY BLANK-SCREEN.
-           DISPLAY(2 26) "Cajero Automatico UnizarBank"
+           DISPLAY "Cajero Automatico UnizarBank"
                WITH FOREGROUND-COLOR IS 1.
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
 
-           DISPLAY(4 32) DIA.
-           DISPLAY(4 34) "-".
-           DISPLAY(4 35) MES.
-           DISPLAY(4 37) "-".
-           DISPLAY(4 38) ANO.
-           DISPLAY(4 44) HORAS.
-           DISPLAY(4 46) ":".
-           DISPLAY(4 47) MINUTOS.
+           DISPLAY DIA.
+           DISPLAY "-".
+           DISPLAY MES.
+           DISPLAY "-".
+           DISPLAY ANO.
+           DISPLAY HORAS.
+           DISPLAY ":".
+           DISPLAY MINUTOS.
 
        PCONSULTA-MOV.
 
@@ -252,17 +252,17 @@
            INITIALIZE EURENT2-USUARIO.
            INITIALIZE EURDEC2-USUARIO.
 
-           DISPLAY(8 8) "Se  mostraran los ultimos movimientos,".
-           DISPLAY(8 47) "de mas a menos recientes.".
+           DISPLAY "Se  mostraran los ultimos movimientos,".
+           DISPLAY "de mas a menos recientes.".
 
-           DISPLAY(10 8) "Alternativamente, indique un intervalo".
-           DISPLAY(10 47) "de fechas y/o cantidades.".
+           DISPLAY "Alternativamente, indique un intervalo".
+           DISPLAY "de fechas y/o cantidades.".
 
-           DISPLAY(13 20) "Entre las fechas   /  /     y   /  /    ".
-           DISPLAY(15 15) "Cantidad entre         .   EUR y         .   EUR".
+           DISPLAY "Entre las fechas   /  /     y   /  /    ".
+           DISPLAY "Cantidad entre         .   EUR y         .   EUR".
 
-           DISPLAY(24 01) "Enter - Aceptar".
-           DISPLAY(24 65) "ESC - Cancelar".
+           DISPLAY "Enter - Aceptar".
+           DISPLAY "ESC - Cancelar".
 
            ACCEPT FILTRO-MOVIMIENTOS ON EXCEPTION
                IF ESC-PRESSED
@@ -297,17 +297,17 @@
                GO TO POSICIONAR-FINAL.
 
        PLECTURA-MOV.
-           DISPLAY(7 8) "FECHA".
-           DISPLAY(7 18) "|".
-           DISPLAY(7 35) "CONCEPTO".
-           DISPLAY(7 54) "|".
-           DISPLAY(7 57) "IMPORTE".
-           DISPLAY(7 66) "|".
-           DISPLAY(7 71) "SALDO".
+           DISPLAY "FECHA".
+           DISPLAY "|".
+           DISPLAY "CONCEPTO".
+           DISPLAY "|".
+           DISPLAY "IMPORTE".
+           DISPLAY "|".
+           DISPLAY "SALDO".
 
-           DISPLAY(24 2) "Re. pag - Esp. anteriores".
-           DISPLAY(24 33) "ESC - Salir".
-           DISPLAY(24 54) "Av. pag - Esp. posteriores".
+           DISPLAY "Re. pag - Esp. anteriores".
+           DISPLAY "ESC - Salir".
+           DISPLAY "Av. pag - Esp. posteriores".
 
            MOVE 0 TO MOV-EN-PANTALLA.
            MOVE 7 TO LINEA-MOV-ACTUAL.
@@ -334,7 +334,7 @@
 
        WAIT-ORDER.
 
-           ACCEPT(24 80) PRESSED-KEY ON EXCEPTION
+           ACCEPT PRESSED-KEY ON EXCEPTION
 
               IF ESC-PRESSED THEN
                   CLOSE F-MOVIMIENTOS
@@ -460,16 +460,16 @@
            CLOSE F-MOVIMIENTOS.
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY(9 25) "Ha ocurrido un error interno"
+           DISPLAY "Ha ocurrido un error interno"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY(11 32) "Vuelva mas tarde"
+           DISPLAY "Vuelva mas tarde"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY(24 33) "Enter - Aceptar".
+           DISPLAY "Enter - Aceptar".
 
        EXIT-ENTER.
-           ACCEPT(24 80) PRESSED-KEY
+           ACCEPT PRESSED-KEY
            IF ENTER-PRESSED
                EXIT PROGRAM
            ELSE

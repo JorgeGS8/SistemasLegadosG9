@@ -111,8 +111,7 @@
                LINE 12 COL 54 PIC 9(16) USING CUENTA-DESTINO.
            05 FILLER AUTO UNDERLINE
                LINE 14 COL 54 PIC X(15) USING NOMBRE-DESTINO.
-           05 FILLER BLANK ZERO AUTO UNDERLINE
-               SIGN IS LEADING SEPARATE
+           05  BLANK ZERO AUTO UNDERLINE
                LINE 16 COL 54 PIC 9(7) USING EURENT-USUARIO.
            05 FILLER BLANK ZERO UNDERLINE
                LINE 16 COL 63 PIC 9(2) USING EURDEC-USUARIO.
@@ -139,19 +138,19 @@
 
        IMPRIMIR-CABECERA.
            DISPLAY BLANK-SCREEN.
-           DISPLAY(2 26) "Cajero Automatico UnizarBank"
+           DISPLAY "Cajero Automatico UnizarBank"
                WITH FOREGROUND-COLOR IS 1.
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
 
-           DISPLAY(4 32) DIA.
-           DISPLAY(4 34) "-".
-           DISPLAY(4 35) MES.
-           DISPLAY(4 37) "-".
-           DISPLAY(4 38) ANO.
-           DISPLAY(4 44) HORAS.
-           DISPLAY(4 46) ":".
-           DISPLAY(4 47) MINUTOS.
+           DISPLAY DIA.
+           DISPLAY "-".
+           DISPLAY MES.
+           DISPLAY "-".
+           DISPLAY ANO.
+           DISPLAY HORAS.
+           DISPLAY ":".
+           DISPLAY MINUTOS.
 
        MOVIMIENTOS-OPEN.
            OPEN I-O F-MOVIMIENTOS.
@@ -174,11 +173,11 @@
        ORDENACION-TRF.
            CLOSE F-MOVIMIENTOS.
 
-           DISPLAY(8 30) "Ordenar Transferencia".
-           DISPLAY(10 19) "Saldo Actual:".
+           DISPLAY "Ordenar Transferencia".
+           DISPLAY "Saldo Actual:".
 
-           DISPLAY(24 2) "Enter - Confirmar".
-           DISPLAY(24 66) "ESC - Cancelar".
+           DISPLAY "Enter - Confirmar".
+           DISPLAY "ESC - Cancelar".
 
            IF LAST-USER-ORD-MOV-NUM = 0 THEN
                GO TO NO-MOVIMIENTOS
@@ -192,11 +191,11 @@
            CLOSE F-MOVIMIENTOS.
 
        INDICAR-CTA-DST.
-           DISPLAY(12 19) "Indica la cuenta destino".
-           DISPLAY(14 19) "y nombre del titular".
-           DISPLAY(16 19) "Indique la cantidad a transferir".
-           DISPLAY(16 61) ",".
-           DISPLAY(16 66) "EUR".
+           DISPLAY "Indica la cuenta destino".
+           DISPLAY "y nombre del titular".
+           DISPLAY "Indique la cantidad a transferir".
+           DISPLAY ",".
+           DISPLAY "EUR".
 
            COMPUTE CENT-SALDO-ORD-USER = (MOV-SALDOPOS-ENT * 100)
                                          + MOV-SALDOPOS-DEC.
@@ -212,7 +211,7 @@
                                      + EURDEC-USUARIO.
 
            IF CENT-IMPOR-USER > CENT-SALDO-ORD-USER THEN
-                   DISPLAY(20 19) "Indique una cantidad menor!!"
+                   DISPLAY "Indique una cantidad menor!!"
                     WITH BACKGROUND-COLOR RED
                    GO TO INDICAR-CTA-DST
            END-IF.
@@ -220,43 +219,43 @@
            GO TO REALIZAR-TRF-VERIFICACION.
 
        NO-MOVIMIENTOS.
-           DISPLAY(10 51) "0".
-           DISPLAY(10 52) ".".
-           DISPLAY(10 53) "00".
-           DISPLAY(10 54) "EUR".
+           DISPLAY "0".
+           DISPLAY ".".
+           DISPLAY "00".
+           DISPLAY "EUR".
 
-           DISPLAY(12 19) "Indica la cuenta destino ".
-           DISPLAY(14 19) "y nombre del titular".
-           DISPLAY(16 19) "Indique la cantidad a transferir".
-           DISPLAY(16 61) ",".
-           DISPLAY(16 66) "EUR".
+           DISPLAY "Indica la cuenta destino ".
+           DISPLAY "y nombre del titular".
+           DISPLAY "Indique la cantidad a transferir".
+           DISPLAY ",".
+           DISPLAY "EUR".
 
            ACCEPT FILTRO-CUENTA ON EXCEPTION
            IF ESC-PRESSED THEN
                EXIT PROGRAM
            END-IF.
 
-           DISPLAY(20 19) "Indique una cantidad menor!!"
+           DISPLAY "Indique una cantidad menor!!"
             WITH BACKGROUND-COLOR RED.
 
            GO TO NO-MOVIMIENTOS.
 
        REALIZAR-TRF-VERIFICACION.
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY(08 30) "Ordenar Transferencia".
-           DISPLAY(11 19) "Va a transferir:".
-           DISPLAY(11 38) EURENT-USUARIO.
-           DISPLAY(11 45) ".".
-           DISPLAY(11 46) EURDEC-USUARIO.
-           DISPLAY(11 49) "EUR de su cuenta".
-           DISPLAY(12 19) "a la cuenta cuyo titular es".
-           DISPLAY(12 48) NOMBRE-DESTINO.
+           DISPLAY "Ordenar Transferencia".
+           DISPLAY "Va a transferir:".
+           DISPLAY EURENT-USUARIO.
+           DISPLAY ".".
+           DISPLAY EURDEC-USUARIO.
+           DISPLAY "EUR de su cuenta".
+           DISPLAY "a la cuenta cuyo titular es".
+           DISPLAY NOMBRE-DESTINO.
 
-           DISPLAY(24 2) "Enter - Confirmar".
-           DISPLAY(24 66) "ESC - Cancelar".
+           DISPLAY "Enter - Confirmar".
+           DISPLAY "ESC - Cancelar".
 
        ENTER-VERIFICACION.
-           ACCEPT(24 80) PRESSED-KEY ON EXCEPTION
+           ACCEPT PRESSED-KEY ON EXCEPTION
            IF ESC-PRESSED THEN
                EXIT PROGRAM
            ELSE
@@ -351,9 +350,9 @@
        P-EXITO.
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
 
-           DISPLAY(8 30) "Ordenar transferencia".
-           DISPLAY(11 19) "Transferencia realizada correctamente!".
-           DISPLAY(24 33) "Enter - Aceptar".
+           DISPLAY "Ordenar transferencia".
+           DISPLAY "Transferencia realizada correctamente!".
+           DISPLAY "Enter - Aceptar".
 
            GO TO EXIT-ENTER.
 
@@ -362,16 +361,16 @@
            CLOSE F-MOVIMIENTOS.
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY(09 25) "Ha ocurrido un error interno"
+           DISPLAY "Ha ocurrido un error interno"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY(11 32) "Vuelva mas tarde"
+           DISPLAY "Vuelva mas tarde"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY(24 33) "Enter - Aceptar".
+           DISPLAY "Enter - Aceptar".
 
        EXIT-ENTER.
-           ACCEPT(24 80) PRESSED-KEY
+           ACCEPT PRESSED-KEY
            IF ENTER-PRESSED
                EXIT PROGRAM
            ELSE
@@ -380,8 +379,8 @@
        USER-BAD.
            CLOSE TARJETAS.
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY(9 22) "La cuenta introducida es incorrecta"
+           DISPLAY "La cuenta introducida es incorrecta"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY(24 33) "Enter - Salir".
+           DISPLAY "Enter - Salir".
            GO TO EXIT-ENTER.

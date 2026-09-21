@@ -96,29 +96,29 @@
 
            DISPLAY BLANK-SCREEN.
 
-           DISPLAY (2 26) "Cajero Automatico UnizarBank"
+           DISPLAY  "Cajero Automatico UnizarBank"
                WITH FOREGROUND-COLOR IS BLUE.
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
 
-           DISPLAY (4 32) DIA.
-           DISPLAY (4 34) "-".
-           DISPLAY (4 35) MES.
-           DISPLAY (4 37) "-".
-           DISPLAY (4 38) ANO.
-           DISPLAY (4 44) HORAS.
-           DISPLAY (4 46) ":".
-           DISPLAY (4 47) MINUTOS.
+           DISPLAY DIA.
+           DISPLAY "-".
+           DISPLAY MES.
+           DISPLAY "-".
+           DISPLAY ANO.
+           DISPLAY HORAS.
+           DISPLAY ":".
+           DISPLAY MINUTOS.
 
 
        P1.
-           DISPLAY (8 28) "Bienvenido a UnizarBank".
-           DISPLAY (10 18) "Por favor, introduzca la tarjeta para operar".
+           DISPLAY "Bienvenido a UnizarBank".
+           DISPLAY "Por favor, introduzca la tarjeta para operar".
 
-           DISPLAY (24 33) "Enter - Aceptar".
+           DISPLAY "Enter - Aceptar".
 
        P1-ENTER.
-           ACCEPT (24 80) CHOICE ON EXCEPTION
+           ACCEPT CHOICE ON EXCEPTION
            IF ENTER-PRESSED
                GO TO P2
            ELSE
@@ -127,12 +127,12 @@
 
        P2.
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY (24 33) "ESC - Salir".
+           DISPLAY "ESC - Salir".
            INITIALIZE TNUM.
            INITIALIZE PIN-INTRODUCIDO.
            INITIALIZE TPIN.
-           DISPLAY (8 15) "Numero de tarjeta:".
-           DISPLAY (9 15) "Inserte el pin de tarjeta:".
+           DISPLAY "Numero de tarjeta:".
+           DISPLAY "Inserte el pin de tarjeta:".
            ACCEPT DATA-ACCEPT ON EXCEPTION
                IF ESC-PRESSED
                    GO TO IMPRIMIR-CABECERA
@@ -164,17 +164,17 @@
            CLOSE INTENTOS.
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY (8 15) "1 - Consultar saldo".
-           DISPLAY (9 15) "2 - Consultar movimientos".
-           DISPLAY (10 15) "3 - Retirar efectivo".
-           DISPLAY (11 15) "4 - Ingresar efectivo".
-           DISPLAY (12 15) "5 - Ordenar transferencia".
-           DISPLAY (13 15) "6 - Comprar entradas de espectaculos".
-           DISPLAY (15 15) "7 - Cambiar clave".
-           DISPLAY (24 34) "ESC - Salir".
+           DISPLAY "1 - Consultar saldo".
+           DISPLAY "2 - Consultar movimientos".
+           DISPLAY "3 - Retirar efectivo".
+           DISPLAY "4 - Ingresar efectivo".
+           DISPLAY "5 - Ordenar transferencia".
+           DISPLAY "6 - Comprar entradas de espectaculos".
+           DISPLAY "7 - Cambiar clave".
+           DISPLAY "ESC - Salir".
 
        PMENUA1.
-           ACCEPT (24 80) CHOICE ON EXCEPTION
+           ACCEPT CHOICE ON EXCEPTION
                IF ESC-PRESSED
                    GO TO IMPRIMIR-CABECERA
                ELSE
@@ -218,13 +218,13 @@
            CLOSE INTENTOS.
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY (9 25) "Ha ocurrido un error interno"
+           DISPLAY  "Ha ocurrido un error interno"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY (11 32) "Vuelva mas tarde"
+           DISPLAY  "Vuelva mas tarde"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY (24 33) "Enter - Aceptar".
+           DISPLAY  "Enter - Aceptar".
            GO TO PINT-ERR-ENTER.
 
 
@@ -237,16 +237,16 @@
            DISPLAY "(9 20) Se ha sobrepasado el numero de intentos"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY (11 18) "Por su seguridad se ha bloqueado la tarjeta"
+           DISPLAY  "Por su seguridad se ha bloqueado la tarjeta"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY (12 30) "Acuda a una sucursal"
+           DISPLAY  "Acuda a una sucursal"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY (24 33) "Enter - Aceptar".
+           DISPLAY  "Enter - Aceptar".
 
        PINT-ERR-ENTER.
-           ACCEPT (24 80) CHOICE ON EXCEPTION
+           ACCEPT  CHOICE ON EXCEPTION
            IF ENTER-PRESSED
                GO TO IMPRIMIR-CABECERA
            ELSE
@@ -261,25 +261,25 @@
            CLOSE INTENTOS.
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           DISPLAY (9 26) "El codigo PIN es incorrecto"
+           DISPLAY  "El codigo PIN es incorrecto"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY (11 30) "Le quedan "
+           DISPLAY  "Le quedan "
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY (11 40) IINTENTOS
+           DISPLAY  IINTENTOS
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
-           DISPLAY (11 42) " intentos"
+           DISPLAY  " intentos"
 
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
 
-           DISPLAY (24 1) "Enter - Aceptar".
-           DISPLAY (24 65) "ESC - Cancelar".
+           DISPLAY  "Enter - Aceptar".
+           DISPLAY  "ESC - Cancelar".
 
        PPIN-ERR-ENTER.
-           ACCEPT (24 80) CHOICE ON EXCEPTION
+           ACCEPT CHOICE ON EXCEPTION
            IF ENTER-PRESSED
                GO TO P2
            ELSE
