@@ -121,9 +121,9 @@
        P1-ENTER.
            ACCEPT CHOICE AT 2480
            IF ENTER-PRESSED
-               GO TO P2
+               PERFORM P2
            ELSE
-               GO TO P1-ENTER.
+               PERFORM P1-ENTER.
 
 
        P2.
@@ -136,27 +136,27 @@
            DISPLAY (9,15) "Inserte el pin de tarjeta:".
            ACCEPT DATA-ACCEPT ON EXCEPTION
                IF ESC-PRESSED
-                   GO TO IMPRIMIR-CABECERA
+                   PERFORM IMPRIMIR-CABECERA
                ELSE
-                   GO TO P2.
+                   PERFORM P2.
 
            OPEN I-O TARJETAS.
            IF FST NOT = 00
-               GO TO PSYS-ERR.
-           READ TARJETAS INVALID KEY GO TO PSYS-ERR.
+               PERFORM PSYS-ERR.
+           READ TARJETAS INVALID KEY PERFORM PSYS-ERR.
 
            OPEN I-O INTENTOS.
            IF FSI NOT = 00
-               GO TO PSYS-ERR.
+               PERFORM PSYS-ERR.
            MOVE TNUM TO INUM.
 
-           READ INTENTOS INVALID KEY GO TO PSYS-ERR.
+           READ INTENTOS INVALID KEY PERFORM PSYS-ERR.
 
            IF IINTENTOS = 0
-               GO TO PINT-ERR.
+             PERFORM PINT-ERR.
 
            IF PIN-INTRODUCIDO NOT = TPIN
-               GO TO PPIN-ERR.
+               PERFORM PPIN-ERR.
 
            PERFORM REINICIAR-INTENTOS THRU REINICIAR-INTENTOS.
 
@@ -177,40 +177,40 @@
        PMENUA1.
            ACCEPT CHOICE AT 2480
                IF ESC-PRESSED
-                   GO TO IMPRIMIR-CABECERA
+                   PERFORM IMPRIMIR-CABECERA
                ELSE
-                   GO TO PMENUA1.
+                   PERFORM PMENUA1.
 
 
            IF CHOICE = 1
                CALL "BANK2" USING TNUM
-               GO TO PMENU.
+               PERFORM PMENU.
 
            IF CHOICE = 2
                CALL "BANK3" USING TNUM
-               GO TO PMENU.
+               PERFORM PMENU.
 
            IF CHOICE = 3
                CALL "BANK4" USING TNUM
-               GO TO PMENU.
+               PERFORM PMENU.
 
            IF CHOICE = 4
                CALL "BANK5" USING TNUM
-               GO TO PMENU.
+               PERFORM PMENU.
 
            IF CHOICE = 5
                CALL "BANK6" USING TNUM
-               GO TO PMENU.
+               PERFORM PMENU.
 
            IF CHOICE = 6
                CALL "BANK7" USING TNUM
-               GO TO PMENU.
+               PERFORM PMENU.
 
            IF CHOICE = 7
                CALL "BANK8" USING TNUM
-               GO TO PMENU.
+               PERFORM PMENU.
 
-           GO TO PMENU.
+           PERFORM PMENU.
 
 
        PSYS-ERR.
@@ -226,7 +226,7 @@
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
            DISPLAY (24,33) "Enter - Aceptar".
-           GO TO PINT-ERR-ENTER.
+           PERFORM PINT-ERR-ENTER.
 
 
        PINT-ERR.
@@ -249,14 +249,14 @@
        PINT-ERR-ENTER.
            ACCEPT CHOICE AT 2480
            IF ENTER-PRESSED
-               GO TO IMPRIMIR-CABECERA
+               PERFORM IMPRIMIR-CABECERA
            ELSE
-               GO TO PINT-ERR-ENTER.
+               PERFORM PINT-ERR-ENTER.
 
 
        PPIN-ERR.
            SUBTRACT 1 FROM IINTENTOS.
-           REWRITE INTENTOSREG INVALID KEY GO TO PSYS-ERR.
+           REWRITE INTENTOSREG INVALID KEY PERFORM PSYS-ERR.
 
            CLOSE TARJETAS.
            CLOSE INTENTOS.
@@ -282,14 +282,14 @@
        PPIN-ERR-ENTER.
            ACCEPT CHOICE AT 2480
            IF ENTER-PRESSED
-               GO TO P2
+               PERFORM P2
            ELSE
                IF ESC-PRESSED
-                   GO TO IMPRIMIR-CABECERA
+                   PERFORM IMPRIMIR-CABECERA
                ELSE
-                   GO TO PPIN-ERR-ENTER.
+                   PERFORM PPIN-ERR-ENTER.
 
 
        REINICIAR-INTENTOS.
            MOVE 3 TO IINTENTOS.
-           REWRITE INTENTOSREG INVALID KEY GO TO PSYS-ERR.
+           REWRITE INTENTOSREG INVALID KEY PERFORM PSYS-ERR.
