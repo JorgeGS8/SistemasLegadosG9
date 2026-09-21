@@ -268,7 +268,7 @@
                IF ESC-PRESSED
                    EXIT PROGRAM
                ELSE
-                   GO TO PCONSULTA-MOV.
+                   PERFORM PCONSULTA-MOV.
 
            IF DIA2-USUARIO = 0
                IF MES2-USUARIO = 0
@@ -294,7 +294,7 @@
 
        POSICIONAR-FINAL.
            READ F-MOVIMIENTOS NEXT RECORD AT END GO PLECTURA-MOV.
-               GO TO POSICIONAR-FINAL.
+               PERFORM POSICIONAR-FINAL.
 
        PLECTURA-MOV.
            DISPLAY(7 8) "FECHA".
@@ -328,9 +328,9 @@
                    PERFORM MOSTRAR-MOVIMIENTO THRU MOSTRAR-MOVIMIENTO.
 
                IF MOV-EN-PANTALLA = 15
-                   GO TO WAIT-ORDER.
+                   PERFORM WAIT-ORDER.
 
-               GO TO LEER-PRIMEROS.
+               PERFORM LEER-PRIMEROS.
 
        WAIT-ORDER.
 
@@ -342,26 +342,26 @@
               END-IF
 
               IF PGDN-PRESSED THEN
-                  GO TO FLECHA-ABAJO
+                  PERFORM FLECHA-ABAJO
               END-IF
 
               IF PGUP-PRESSED THEN
-                  GO TO FLECHA-ARRIBA
+                  PERFORM FLECHA-ARRIBA
               END-IF
 
            END-ACCEPT.
 
-           GO TO WAIT-ORDER.
+           PERFORM WAIT-ORDER.
 
        FLECHA-ABAJO.
            MOVE REGISTROS-EN-PANTALLA(MOV-EN-PANTALLA) TO MOV-NUM.
            READ F-MOVIMIENTOS INVALID KEY GO WAIT-ORDER.
-           GO TO LEER-VIEJO.
+           PERFORM LEER-VIEJO.
 
        FLECHA-ARRIBA.
            MOVE REGISTROS-EN-PANTALLA(1) TO MOV-NUM.
            READ F-MOVIMIENTOS INVALID KEY GO WAIT-ORDER.
-           GO TO LEER-NUEVO.
+           PERFORM LEER-NUEVO.
 
        LEER-VIEJO.
            READ F-MOVIMIENTOS PREVIOUS RECORD
@@ -372,9 +372,9 @@
 
                IF MOV-VALIDO = 1
                    MOVE 2 TO MOV-VALIDO
-                   GO TO CONTROL-PANTALLA
+                   PERFORM CONTROL-PANTALLA
                ELSE
-                   GO TO LEER-VIEJO.
+                   PERFORM LEER-VIEJO.
 
        LEER-NUEVO.
            READ F-MOVIMIENTOS NEXT RECORD
@@ -385,22 +385,22 @@
 
                IF MOV-VALIDO = 1
                    MOVE 3 TO MOV-VALIDO
-                   GO TO CONTROL-PANTALLA
+                   PERFORM CONTROL-PANTALLA
                ELSE
-                   GO TO LEER-NUEVO.
+                   PERFORM LEER-NUEVO.
 
        CONTROL-PANTALLA.
            IF MOV-VALIDO = 2 THEN
                MOVE 0 TO MOV-VALIDO
                PERFORM REORDENAR-1 THRU REORDENAR-1
-               GO TO WAIT-ORDER
+               PERFORM WAIT-ORDER
            ELSE
                IF MOV-VALIDO = 3 THEN
                    MOVE 0 TO MOV-VALIDO
                    PERFORM REORDENAR-2 THRU REORDENAR-2
-                   GO TO WAIT-ORDER
+                   PERFORM WAIT-ORDER
                ELSE
-                   GO TO WAIT-ORDER
+                   PERFORM WAIT-ORDER
                END-IF
            END-IF.
 
@@ -439,7 +439,7 @@
 
            PERFORM MOSTRAR-TABLA THRU MOSTRAR-TABLA.
 
-           GO TO WAIT-ORDER.
+           PERFORM WAIT-ORDER.
 
        MOSTRAR-TABLA.
            MOVE 8 TO LINEA-MOV-ACTUAL.
@@ -473,7 +473,7 @@
            IF ENTER-PRESSED
                EXIT PROGRAM
            ELSE
-               GO TO EXIT-ENTER.
+               PERFORM EXIT-ENTER.
 
 
        FILTRADO.
