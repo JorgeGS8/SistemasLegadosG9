@@ -83,7 +83,7 @@
        01 DATA-ACCEPT.
            05 TARJETA-ACCEPT BLANK ZERO AUTO LINE 08 COL 50
                PIC 9(16) USING TNUM.
-           05 PIN-ACCEPT BLANK ZERO SECURE LINE 09 COL 50
+           05 PIN-ACCEPT BLANK ZERO AUTO SECURE LINE 09 COL 50
                PIC 9(4) USING PIN-INTRODUCIDO.
 
 
@@ -121,9 +121,9 @@
        P1-ENTER.
            ACCEPT CHOICE AT 2480
            IF ENTER-PRESSED
-               PERFORM P2
+               GO TO P2
            ELSE
-               PERFORM P1-ENTER.
+               GO TO P1-ENTER.
 
 
        P2.
@@ -136,27 +136,27 @@
            DISPLAY (9,15) "Inserte el pin de tarjeta:".
            ACCEPT DATA-ACCEPT ON EXCEPTION
                IF ESC-PRESSED
-                   PERFORM IMPRIMIR-CABECERA
+                   GO TO IMPRIMIR-CABECERA
                ELSE
-                   PERFORM P2.
+                   GO TO P2.
 
            OPEN I-O TARJETAS.
            IF FST NOT = 00
-               PERFORM PSYS-ERR.
-           READ TARJETAS INVALID KEY PERFORM PSYS-ERR.
+               GO TO PSYS-ERR.
+           READ TARJETAS INVALID KEY GO TO PSYS-ERR.
 
            OPEN I-O INTENTOS.
            IF FSI NOT = 00
-               PERFORM PSYS-ERR.
+               GO TO PSYS-ERR.
            MOVE TNUM TO INUM.
 
-           READ INTENTOS INVALID KEY PERFORM PSYS-ERR.
+           READ INTENTOS INVALID KEY GO TO PSYS-ERR.
 
            IF IINTENTOS = 0
-             PERFORM PINT-ERR.
+             GO TO PINT-ERR.
 
            IF PIN-INTRODUCIDO NOT = TPIN
-               PERFORM PPIN-ERR.
+               GO TO PPIN-ERR.
 
            PERFORM REINICIAR-INTENTOS THRU REINICIAR-INTENTOS.
 
@@ -175,42 +175,42 @@
            DISPLAY (24,34) "ESC - Salir".
 
        PMENUA1.
-           ACCEPT CHOICE AT 2480
+           ACCEPT CHOICE AT 2480 ON EXCEPTION
                IF ESC-PRESSED
-                   PERFORM IMPRIMIR-CABECERA
+                   GO TO IMPRIMIR-CABECERA
                ELSE
-                   PERFORM PMENUA1.
+                   GO TO PMENUA1.
 
 
            IF CHOICE = 1
                CALL "BANK2" USING TNUM
-               PERFORM PMENU.
+               GO TO PMENU.
 
            IF CHOICE = 2
                CALL "BANK3" USING TNUM
-               PERFORM PMENU.
+               GO TO PMENU.
 
            IF CHOICE = 3
                CALL "BANK4" USING TNUM
-               PERFORM PMENU.
+               GO TO PMENU.
 
            IF CHOICE = 4
                CALL "BANK5" USING TNUM
-               PERFORM PMENU.
+               GO TO PMENU.
 
            IF CHOICE = 5
                CALL "BANK6" USING TNUM
-               PERFORM PMENU.
+               GO TO PMENU.
 
            IF CHOICE = 6
                CALL "BANK7" USING TNUM
-               PERFORM PMENU.
+               GO TO PMENU.
 
            IF CHOICE = 7
                CALL "BANK8" USING TNUM
-               PERFORM PMENU.
+               GO TO PMENU.
 
-           PERFORM PMENU.
+           GO TO PMENU.
 
 
        PSYS-ERR.
@@ -226,7 +226,7 @@
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
            DISPLAY (24,33) "Enter - Aceptar".
-           PERFORM PINT-ERR-ENTER.
+           GO TO PINT-ERR-ENTER.
 
 
        PINT-ERR.
@@ -249,14 +249,14 @@
        PINT-ERR-ENTER.
            ACCEPT CHOICE AT 2480
            IF ENTER-PRESSED
-               PERFORM IMPRIMIR-CABECERA
+               GO TO IMPRIMIR-CABECERA
            ELSE
-               PERFORM PINT-ERR-ENTER.
+               GO TO PINT-ERR-ENTER.
 
 
        PPIN-ERR.
            SUBTRACT 1 FROM IINTENTOS.
-           REWRITE INTENTOSREG INVALID KEY PERFORM PSYS-ERR.
+           REWRITE INTENTOSREG INVALID KEY GO TO PSYS-ERR.
 
            CLOSE TARJETAS.
            CLOSE INTENTOS.
@@ -282,14 +282,14 @@
        PPIN-ERR-ENTER.
            ACCEPT CHOICE AT 2480
            IF ENTER-PRESSED
-               PERFORM P2
+               GO TO P2
            ELSE
                IF ESC-PRESSED
-                   PERFORM IMPRIMIR-CABECERA
+                   GO TO IMPRIMIR-CABECERA
                ELSE
-                   PERFORM PPIN-ERR-ENTER.
+                   GO TO PPIN-ERR-ENTER.
 
 
        REINICIAR-INTENTOS.
            MOVE 3 TO IINTENTOS.
-           REWRITE INTENTOSREG INVALID KEY PERFORM PSYS-ERR.
+           REWRITE INTENTOSREG INVALID KEY GO TO PSYS-ERR.
