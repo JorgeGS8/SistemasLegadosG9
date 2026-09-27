@@ -310,7 +310,7 @@
            MOVE 9 TO LINEA-ESP-ACTUAL.
 
            OPEN I-O F-ESPECTACULOS.
-           IF FSE <> 30
+           IF FSE NOT = "00"
                GO TO PSYS-ERR.
 
 
