@@ -71,7 +71,7 @@
            88 ENTER-PRESSED          VALUE 0.
            88 ESC-PRESSED         VALUE 2005.
 
-       77 PRESSED-KEY              PIC  9(4).
+       77 PRESSED-KEY              PIC  X(4) VALUE SPACES.
        77 CHOICE                   PIC  9(1). 
        77 PIN-ACTUAL               PIC  9(4).
        77 NUEVO-PIN                PIC  9(4).
