@@ -68,7 +68,7 @@
            88 DOWN-ARROW-PRESSED  VALUE  2004.
 
        77 LAST-MOV-NUM             PIC  9(35).
-       77 PRESSED-KEY              PIC   9(4).
+       77 PRESSED-KEY              PIC   X(4) VALUE SPACES.
 
        LINKAGE SECTION.
        77 TNUM                     PIC  9(16).
@@ -108,7 +108,7 @@
 
        PCONSULTA-SALDO.
            OPEN INPUT F-MOVIMIENTOS.
-           IF FSM <> 30
+           IF FSM NOT = "00"
                GO TO PSYS-ERR.
 
            MOVE 0 TO LAST-MOV-NUM.
@@ -134,7 +134,7 @@
 
            MOVE LAST-MOV-NUM TO MOV-NUM.
            OPEN INPUT F-MOVIMIENTOS.
-           IF FSM <> 30
+           IF FSM NOT = "00"
                GO TO PSYS-ERR.
 
            READ F-MOVIMIENTOS INVALID KEY GO PSYS-ERR.

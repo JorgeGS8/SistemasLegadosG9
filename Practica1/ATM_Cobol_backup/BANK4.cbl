@@ -79,7 +79,7 @@
        77 CENT-IMPOR-USER          PIC    9(9).
 
        77 CON                      PIC   X(35) VALUE "Retirada".
-       77 PRESSED-KEY              PIC    9(4).
+       77 PRESSED-KEY              PIC    X(4) VALUE SPACES.
 
        LINKAGE SECTION.
        77 TNUM                     PIC  9(16).
@@ -140,7 +140,7 @@
 
        CONSULTA-ULTIMO-MOVIMIENTO SECTION.
            OPEN I-O F-MOVIMIENTOS.
-           IF FSM <> 30
+           IF FSM NOT = "00"
               PERFORM PSYS-ERR.
 
            MOVE 0 TO LAST-MOV-NUM.
@@ -161,7 +161,7 @@
 
        CONSULTA-SALDO-USUARIO SECTION.
            OPEN INPUT F-MOVIMIENTOS.
-           IF FSM <> 30
+           IF FSM NOT = "00"
                PERFORM PSYS-ERR.
 
            MOVE 0 TO LAST-USER-MOV-NUM.
@@ -190,7 +190,7 @@
            MOVE LAST-USER-MOV-NUM TO MOV-NUM.
 
            OPEN INPUT F-MOVIMIENTOS.
-           IF FSM <> 30
+           IF FSM NOT = "00"
                PERFORM PSYS-ERR.
 
            READ F-MOVIMIENTOS INVALID KEY PERFORM PSYS-ERR.
@@ -243,7 +243,7 @@
        INSERTAR-MOVIMIENTO SECTION.
 
            OPEN I-O F-MOVIMIENTOS.
-           IF FSM <> 30
+           IF FSM NOT = "00"
               PERFORM PSYS-ERR.
 
            SUBTRACT CENT-IMPOR-USER FROM CENT-SALDO-USER.

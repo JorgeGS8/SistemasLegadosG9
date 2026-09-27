@@ -71,6 +71,9 @@
        77 LAST-USER-MOV-NUM        PIC   9(35).
        77 LAST-MOV-NUM             PIC   9(35).
 
+       77 BILLETES-10              PIC   9(2).
+       77 BILLETES-20              PIC   9(2).
+       77 BILLETES-50              PIC   9(2).
        77 EURENT-USUARIO           PIC    9(7).
        77 EURDEC-USUARIO           PIC    9(2).
        77 SALDO-USUARIO-ENT        PIC   S9(9).
@@ -80,7 +83,8 @@
        77 CENT-ACUMULADOR          PIC   9(11).
 
        77 CON                      PIC   X(35) VALUE "Ingreso".
-       77 PRESSED-KEY              PIC    9(4).
+       77 PRESSED-KEY              PIC    X(4) VALUE SPACES.
+       77 ERROR-OP                 PIC   X(30).
 
        LINKAGE SECTION.
        77 TNUM                     PIC  9(16).
@@ -94,9 +98,11 @@
 
        01 ENTRADA-USUARIO.
            05 FILLER BLANK ZERO AUTO UNDERLINE
-               LINE 13 COL 41 PIC 9(7) USING EURENT-USUARIO.
-           05 FILLER BLANK ZERO UNDERLINE
-               LINE 13 COL 49 PIC 9(2) USING EURDEC-USUARIO.
+               LINE 14 COL 41 PIC 9(2) USING BILLETES-10.
+           05 FILLER BLANK ZERO AUTO UNDERLINE
+               LINE 15 COL 41 PIC 9(2) USING BILLETES-20.
+           05 FILLER BLANK ZERO AUTO UNDERLINE
+               LINE 16 COL 41 PIC 9(2) USING BILLETES-50.
 
        01 SALDO-DISPLAY.
            05 FILLER SIGN IS LEADING SEPARATE
@@ -143,9 +149,10 @@
 
            INITIALIZE CENT-ACUMULADOR.
 
+           MOVE "OPEN I-O F-MOVIMIENTOS" TO ERROR-OP.
            OPEN I-O F-MOVIMIENTOS.
-           IF FSM <> 30
-              PERFORM PSYS-ERR.
+           IF FSM NOT = "00"
+               GO TO PSYS-ERR.
 
            MOVE 0 TO LAST-MOV-NUM.
 
@@ -164,9 +171,10 @@
 
 
        CONSULTA-SALDO-USUARIO SECTION.
+           MOVE "OPEN INPUT F-MOVIMIENTOS" TO ERROR-OP.
            OPEN INPUT F-MOVIMIENTOS.
-           IF FSM <> 30
-               PERFORM PSYS-ERR.
+           IF FSM NOT = "00"
+               GO TO PSYS-ERR.
 
 
            MOVE 0 TO LAST-USER-MOV-NUM.
@@ -174,6 +182,7 @@
 
 
        LECTURA-MOV-USER.
+       
            READ F-MOVIMIENTOS NEXT RECORD
               AT END GO LAST-USER-MOV-FOUND.
 
@@ -190,15 +199,18 @@
                MOVE 0 TO SALDO-USUARIO-DEC
                MOVE 0 TO CENT-SALDO-USER
                PERFORM PANTALLA-INGRESO
+               GO TO INSERTAR-MOVIMIENTO
            END-IF.
 
            MOVE LAST-USER-MOV-NUM TO MOV-NUM.
 
+           MOVE "OPEN INPUT F-MOVIMIENTOS" TO ERROR-OP.
            OPEN INPUT F-MOVIMIENTOS.
-           IF FSM <> 30
-               PERFORM PSYS-ERR.
+           IF FSM NOT = "00" 
+               GO TO PSYS-ERR.
 
-           READ F-MOVIMIENTOS INVALID KEY PERFORM PSYS-ERR.
+           MOVE "READ F-MOVIMIENTOS" TO ERROR-OP.
+           READ F-MOVIMIENTOS INVALID KEY GO TO PSYS-ERR.
 
            MOVE MOV-SALDOPOS-ENT TO SALDO-USUARIO-ENT.
            MOVE MOV-SALDOPOS-DEC TO SALDO-USUARIO-DEC.
@@ -211,6 +223,9 @@
 
 
        PANTALLA-INGRESO SECTION.
+           INITIALIZE BILLETES-10.
+           INITIALIZE BILLETES-20.
+           INITIALIZE BILLETES-50.
            INITIALIZE EURENT-USUARIO.
            INITIALIZE EURDEC-USUARIO.
 
@@ -219,34 +234,46 @@
            DISPLAY(10,19) "Saldo Actual: ".
 
            DISPLAY SALDO-DISPLAY.
-
-           DISPLAY(11,19) "Por favor,introduzca billetes".
-           DISPLAY(13,19) "Cantidad introducida:         ".
-           DISPLAY(13,48) ".".
-           DISPLAY(13,52) "EUR".
+           DISPLAY(11,19) "Introduzca la cantidad de billetes: ".
+           DISPLAY(14,19) "Billetes de 10 EUR: ".
+           DISPLAY(15,19) "Billetes de 20 EUR: ".
+           DISPLAY(16,19) "Billetes de 50 EUR: ".
 
        CONF2.
            ACCEPT ENTRADA-USUARIO ON EXCEPTION
                IF ESC-PRESSED THEN
-                   PERFORM PANT
+                   EXIT PROGRAM
                ELSE
                    GO TO CONF2
                END-IF.
 
-           COMPUTE CENT-IMPOR-USER = (EURENT-USUARIO * 100)
-                                     + EURDEC-USUARIO.
+           IF BILLETES-10 = 0 AND
+              BILLETES-20 = 0 AND
+              BILLETES-50 = 0
+               DISPLAY(18,19) "Introduzca al menos un billete"
+                   WITH FOREGROUND-COLOR IS BLACK 
+                        BACKGROUND-COLOR IS RED
+               GO TO CONF2
+           END-IF.
+
+           COMPUTE EURENT-USUARIO = (BILLETES-10 * 10)
+                                  + (BILLETES-20 * 20)
+                                  + (BILLETES-50 * 50).
+           MOVE 0 TO EURDEC-USUARIO.
+           COMPUTE CENT-IMPOR-USER = EURENT-USUARIO * 100.
            ADD CENT-IMPOR-USER TO CENT-ACUMULADOR.
 
-
+           *> TODO SI ESC SALIR NO A LA PANTALLA DE CONFIRMACION
 
 
        INSERTAR-MOVIMIENTO SECTION.
-           OPEN I-O F-MOVIMIENTOS.
-           IF FSM <> 30
-              PERFORM PSYS-ERR.
+              MOVE "OPEN I-O F-MOVIMIENTOS" TO ERROR-OP.
+              OPEN I-O F-MOVIMIENTOS.
+              IF FSM NOT = "00"
+              GO TO PSYS-ERR.
 
            ADD CENT-IMPOR-USER TO CENT-SALDO-USER
-               ON SIZE ERROR PERFORM PSYS-ERR.
+               ON SIZE ERROR GO TO PSYS-ERR.
            COMPUTE SALDO-USUARIO-ENT = (CENT-SALDO-USER / 100).
            MOVE FUNCTION MOD(CENT-SALDO-USER, 100)
                TO SALDO-USUARIO-DEC.
@@ -272,10 +299,11 @@
            MOVE SALDO-USUARIO-ENT       TO MOV-SALDOPOS-ENT.
            MOVE SALDO-USUARIO-DEC       TO MOV-SALDOPOS-DEC.
 
-           WRITE MOVIMIENTO-REG INVALID KEY PERFORM PSYS-ERR.
+           MOVE "WRITE MOVIMIENTO-REG" TO ERROR-OP.
+           WRITE MOVIMIENTO-REG INVALID KEY GO TO PSYS-ERR.
            CLOSE F-MOVIMIENTOS.
 
-           PERFORM PANTALLA-INGRESO.
+           PERFORM PANT.
 
 
 
@@ -305,15 +333,21 @@
 
        PSYS-ERR.
 
-           CLOSE F-MOVIMIENTOS.
+           CLOSE F-MOVIMIENTOS
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
+           *> TODO (9,25) el bueno
            DISPLAY(9,25) "Ha ocurrido un error interno"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
+           *>CLOSE F-MOVIMIENTOS.
+           *> TODO (11,32) el bueno volver a ponerlo luego
            DISPLAY(11,32) "Vuelva mas tarde"
                WITH FOREGROUND-COLOR IS BLACK
                     BACKGROUND-COLOR IS RED.
+           DISPLAY(18,18) "Operacion: " ERROR-OP.
+           DISPLAY(19,18) "FILE STATUS: " FSM.
+
            DISPLAY(24,33) "Enter - Aceptar".
 
        EXIT-ENTER.

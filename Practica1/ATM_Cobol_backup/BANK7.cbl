@@ -89,7 +89,7 @@
            88 UP-ARROW-PRESSED      VALUE 2003.
            88 DOWN-ARROW-PRESSED    VALUE 2004.
            88 ESC-PRESSED           VALUE 2005.
-       77 PRESSED-KEY               PIC   9(4).
+       77 PRESSED-KEY               PIC   X(4) VALUE SPACES.
 
        77 USER-NUM-ENTRADAS         PIC   9(2).
        77 USER-NUM-ESPECT           PIC   9(4).
@@ -261,7 +261,7 @@
 
        CONSULTA-SALDO.
            OPEN I-O F-MOVIMIENTOS.
-           IF FSM <> 30
+           IF FSM NOT = "00"
                GO TO PSYS-ERR.
 
            MOVE 0 TO LAST-USER-MOV-NUM.
@@ -310,7 +310,7 @@
            MOVE 9 TO LINEA-ESP-ACTUAL.
 
            OPEN I-O F-ESPECTACULOS.
-           IF FSE <> 30
+           IF FSE NOT = "00"
                GO TO PSYS-ERR.
 
 
