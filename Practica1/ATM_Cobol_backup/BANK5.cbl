@@ -242,7 +242,7 @@
        CONF2.
            ACCEPT ENTRADA-USUARIO ON EXCEPTION
                IF ESC-PRESSED THEN
-                   PERFORM PANT
+                   EXIT PROGRAM
                ELSE
                    GO TO CONF2
                END-IF.
