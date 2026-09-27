@@ -71,7 +71,6 @@
        77 LAST-USER-MOV-NUM        PIC   9(35).
        77 LAST-MOV-NUM             PIC   9(35).
 
-       77 BILLETES-5               PIC   9(2).
        77 BILLETES-10              PIC   9(2).
        77 BILLETES-20              PIC   9(2).
        77 BILLETES-50              PIC   9(2).
@@ -98,8 +97,6 @@
 
 
        01 ENTRADA-USUARIO.
-           05 FILLER BLANK ZERO AUTO UNDERLINE
-               LINE 13 COL 41 PIC 9(2) USING BILLETES-5.
            05 FILLER BLANK ZERO AUTO UNDERLINE
                LINE 14 COL 41 PIC 9(2) USING BILLETES-10.
            05 FILLER BLANK ZERO AUTO UNDERLINE
@@ -226,7 +223,6 @@
 
 
        PANTALLA-INGRESO SECTION.
-           INITIALIZE BILLETES-5.
            INITIALIZE BILLETES-10.
            INITIALIZE BILLETES-20.
            INITIALIZE BILLETES-50.
@@ -238,8 +234,7 @@
            DISPLAY(10,19) "Saldo Actual: ".
 
            DISPLAY SALDO-DISPLAY.
-           DISPLAY(11,19) "Introduzca la cantidad de billetes:".
-           DISPLAY(13,19) "Billetes de 5 EUR: ".
+           DISPLAY(11,19) "Introduzca la cantidad de billetes: ".
            DISPLAY(14,19) "Billetes de 10 EUR: ".
            DISPLAY(15,19) "Billetes de 20 EUR: ".
            DISPLAY(16,19) "Billetes de 50 EUR: ".
@@ -252,24 +247,23 @@
                    GO TO CONF2
                END-IF.
 
-           IF BILLETES-5 = 0 AND
-              BILLETES-10 = 0 AND
+           IF BILLETES-10 = 0 AND
               BILLETES-20 = 0 AND
               BILLETES-50 = 0
                DISPLAY(18,19) "Introduzca al menos un billete"
-                   WITH BACKGROUND-COLOR RED
+                   WITH FOREGROUND-COLOR IS BLACK 
+                        BACKGROUND-COLOR IS RED
                GO TO CONF2
            END-IF.
 
-           COMPUTE EURENT-USUARIO = (BILLETES-5 * 5)
-                                  + (BILLETES-10 * 10)
+           COMPUTE EURENT-USUARIO = (BILLETES-10 * 10)
                                   + (BILLETES-20 * 20)
                                   + (BILLETES-50 * 50).
            MOVE 0 TO EURDEC-USUARIO.
            COMPUTE CENT-IMPOR-USER = EURENT-USUARIO * 100.
            ADD CENT-IMPOR-USER TO CENT-ACUMULADOR.
 
-
+           *> TODO SI ESC SALIR NO A LA PANTALLA DE CONFIRMACION
 
 
        INSERTAR-MOVIMIENTO SECTION.
@@ -309,7 +303,7 @@
            WRITE MOVIMIENTO-REG INVALID KEY GO TO PSYS-ERR.
            CLOSE F-MOVIMIENTOS.
 
-           PERFORM PANTALLA-INGRESO.
+           PERFORM PANT.
 
 
 
