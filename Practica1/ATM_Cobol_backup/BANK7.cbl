@@ -261,7 +261,7 @@
 
        CONSULTA-SALDO.
            OPEN I-O F-MOVIMIENTOS.
-           IF FSM <> 30
+           IF FSM NOT = "00"
                GO TO PSYS-ERR.
 
            MOVE 0 TO LAST-USER-MOV-NUM.
