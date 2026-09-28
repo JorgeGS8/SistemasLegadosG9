@@ -147,7 +147,7 @@
        CONSULTA-ULTIMO-MOVIMIENTO SECTION.
 
            INITIALIZE CENT-ACUMULADOR.
-
+           CLOSE F-MOVIMIENTOS. 
            OPEN I-O F-MOVIMIENTOS.
            IF FSM NOT = "00"
                GO TO PSYS-ERR.
@@ -195,24 +195,18 @@
                MOVE 0 TO SALDO-USUARIO-ENT
                MOVE 0 TO SALDO-USUARIO-DEC
                MOVE 0 TO CENT-SALDO-USER
-               PERFORM PANTALLA-INGRESO
-               GO TO INSERTAR-MOVIMIENTO
+           ELSE
+               MOVE LAST-USER-MOV-NUM TO MOV-NUM
+               OPEN INPUT F-MOVIMIENTOS
+               IF FSM NOT = "00"
+                   GO TO PSYS-ERR
+               READ F-MOVIMIENTOS INVALID KEY GO TO PSYS-ERR
+               MOVE MOV-SALDOPOS-ENT TO SALDO-USUARIO-ENT
+               MOVE MOV-SALDOPOS-DEC TO SALDO-USUARIO-DEC
+               COMPUTE CENT-SALDO-USER = (SALDO-USUARIO-ENT * 100)
+                                         + SALDO-USUARIO-DEC
+               CLOSE F-MOVIMIENTOS
            END-IF.
-
-           MOVE LAST-USER-MOV-NUM TO MOV-NUM.
-
-           OPEN INPUT F-MOVIMIENTOS.
-           IF FSM NOT = "00" 
-               GO TO PSYS-ERR.
-
-           READ F-MOVIMIENTOS INVALID KEY GO TO PSYS-ERR.
-
-           MOVE MOV-SALDOPOS-ENT TO SALDO-USUARIO-ENT.
-           MOVE MOV-SALDOPOS-DEC TO SALDO-USUARIO-DEC.
-           COMPUTE CENT-SALDO-USER = (SALDO-USUARIO-ENT * 100)
-                                     + SALDO-USUARIO-DEC.
-
-           CLOSE F-MOVIMIENTOS.
 
 
 
@@ -237,6 +231,7 @@
        CONF2.
            ACCEPT ENTRADA-USUARIO ON EXCEPTION
                IF ESC-PRESSED THEN
+                   CLOSE F-MOVIMIENTOS
                    EXIT PROGRAM
                ELSE
                    GO TO CONF2
@@ -259,6 +254,7 @@
            ADD CENT-IMPOR-USER TO CENT-ACUMULADOR.
 
        INSERTAR-MOVIMIENTO SECTION.
+              CLOSE F-MOVIMIENTOS.  
               OPEN I-O F-MOVIMIENTOS.
               IF FSM NOT = "00"
               GO TO PSYS-ERR.
@@ -321,10 +317,8 @@
 
            GO TO EXIT-ENTER.
 
-       PSYS-ERR.
-
-           CLOSE F-MOVIMIENTOS
-
+        PSYS-ERR.
+           CLOSE F-MOVIMIENTOS.
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY(9,25) "Ha ocurrido un error interno"
                WITH FOREGROUND-COLOR IS WHITE
@@ -332,12 +326,12 @@
            DISPLAY(11,32) "Vuelva mas tarde"
                WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
-
            DISPLAY(24,33) "Enter - Aceptar".
 
        EXIT-ENTER.
            ACCEPT(24,80) PRESSED-KEY
            IF ENTER-PRESSED
+               CLOSE F-MOVIMIENTOS
                EXIT PROGRAM
            ELSE
                GO TO EXIT-ENTER.
