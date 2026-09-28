@@ -253,7 +253,7 @@
            DISPLAY(4,35) MES.
            DISPLAY(4,37) "-".
            DISPLAY(4,38) ANO.
-           DISPLAY(4,38) HORAS.
+           DISPLAY(4,44) HORAS.
            DISPLAY(4,46) ":".
            DISPLAY(4,47)MINUTOS.
 
