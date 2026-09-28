@@ -196,7 +196,7 @@
        IMPRIMIR-CABECERA.
            DISPLAY BLANK-SCREEN.
            DISPLAY(2,26) "Cajero Automatico UnizarBank"
-               WITH FOREGROUND-COLOR IS 1.
+               WITH FOREGROUND-COLOR IS CYAN.
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
 
@@ -297,7 +297,8 @@
 
            IF CENT-IMPOR-USER > CENT-SALDO-ORD-USER THEN
                    DISPLAY(20,19) "Indique una cantidad menor!!"
-                    WITH BACKGROUND-COLOR RED
+                    WITH    FOREGROUND-COLOR WHITE
+                            BACKGROUND-COLOR RED
                    GO TO INDICAR-CTA-DST
            END-IF.
 
@@ -313,7 +314,8 @@
 
            IF TIPO-TRF NOT = "P" AND TIPO-TRF NOT = "M" THEN
                DISPLAY(22,19) "Tipo incorrecto. Use P o M"
-                   WITH BACKGROUND-COLOR RED
+                   WITH    FOREGROUND-COLOR WHITE
+                           BACKGROUND-COLOR RED
                GO TO INDICAR-TIPO
            END-IF.
 
@@ -347,7 +349,8 @@
 
            IF DIA-TRF < 1 OR DIA-TRF > 31 THEN
                DISPLAY(22,19) "Dia incorrecto (1-31)"
-                   WITH BACKGROUND-COLOR RED
+                   WITH    FOREGROUND-COLOR WHITE
+                           BACKGROUND-COLOR RED
                GO TO PEDIR-DIA-MES
            END-IF.
            MOVE 0 TO FECHA-EJEC-TRF.
@@ -514,10 +517,10 @@
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY(09,25) "Ha ocurrido un error interno"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY(11,32) "Vuelva mas tarde"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY(24,33) "Enter - Aceptar".
 
@@ -532,7 +535,7 @@
            CLOSE TARJETAS.
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY(9,22) "La cuenta introducida es incorrecta"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY(24,33) "Enter - Salir".
            GO TO EXIT-ENTER.

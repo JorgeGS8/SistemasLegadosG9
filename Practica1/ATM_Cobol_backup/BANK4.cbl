@@ -121,7 +121,7 @@
 
            DISPLAY BLANK-SCREEN.
            DISPLAY(2,26) "Cajero Automatico UnizarBank"
-               WITH FOREGROUND-COLOR IS 1.
+               WITH FOREGROUND-COLOR IS CYAN.
 
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
@@ -233,7 +233,8 @@
 
            IF CENT-IMPOR-USER > CENT-SALDO-USER THEN
                DISPLAY(15,19) "Indique una cantidad menor!!"
-                   WITH BACKGROUND-COLOR RED
+                   WITH    FOREGROUND-COLOR IS WHITE
+                           BACKGROUND-COLOR IS RED
                GO TO PANTALLA-RETIRADA
            END-IF.
 
@@ -298,10 +299,10 @@
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY(9,25) "Ha ocurrido un error interno"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY(11,32) "Vuelva mas tarde"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY(24,33) "Enter - Aceptar".
 

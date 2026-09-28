@@ -100,7 +100,7 @@
            DISPLAY BLANK-SCREEN.
 
            DISPLAY (2,26) "Cajero Automatico UnizarBank"
-               WITH FOREGROUND-COLOR IS BLUE.
+               WITH FOREGROUND-COLOR IS CYAN.
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
 
@@ -155,7 +155,7 @@
 
            IF NUEVO-PIN NOT = REPITE-PIN
                DISPLAY (16,20) "Las nuevas claves no coinciden"
-                   WITH FOREGROUND-COLOR IS BLACK
+                   WITH FOREGROUND-COLOR IS WHITE
                         BACKGROUND-COLOR IS RED
                GO TO P-CAMBIO-CLAVE.
 
@@ -190,16 +190,16 @@
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY (9,26) "El codigo PIN es incorrecto"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY (11,30) "Le quedan "
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY (11,40) IINTENTOS
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY (11,42) " intentos"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
 
            DISPLAY (24,1) "Enter - Aceptar".
@@ -218,13 +218,13 @@
        PINT-ERR.
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY (9,20) "Se ha sobrepasado el numero de intentos"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY (11,18) "Por su seguridad se ha bloqueado la tarjeta"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY (12,30) "Acuda a una sucursal"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY (24,33) "Enter - Aceptar".
 
@@ -241,10 +241,10 @@
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY (9,25) "Ha ocurrido un error interno"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY (11,32) "Vuelva mas tarde"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY (24,33) "Enter - Aceptar".
            GO TO PINT-ERR-ENTER.

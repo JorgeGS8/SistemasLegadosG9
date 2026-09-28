@@ -84,7 +84,6 @@
 
        77 CON                      PIC   X(35) VALUE "Ingreso".
        77 PRESSED-KEY              PIC    X(4) VALUE SPACES.
-       77 ERROR-OP                 PIC   X(30).
 
        LINKAGE SECTION.
        77 TNUM                     PIC  9(16).
@@ -128,7 +127,7 @@
 
            DISPLAY BLANK-SCREEN.
            DISPLAY(2,26) "Cajero Automatico UnizarBank"
-               WITH FOREGROUND-COLOR IS 1.
+               WITH FOREGROUND-COLOR IS CYAN.
 
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
@@ -149,7 +148,6 @@
 
            INITIALIZE CENT-ACUMULADOR.
 
-           MOVE "OPEN I-O F-MOVIMIENTOS" TO ERROR-OP.
            OPEN I-O F-MOVIMIENTOS.
            IF FSM NOT = "00"
                GO TO PSYS-ERR.
@@ -171,7 +169,6 @@
 
 
        CONSULTA-SALDO-USUARIO SECTION.
-           MOVE "OPEN INPUT F-MOVIMIENTOS" TO ERROR-OP.
            OPEN INPUT F-MOVIMIENTOS.
            IF FSM NOT = "00"
                GO TO PSYS-ERR.
@@ -204,12 +201,10 @@
 
            MOVE LAST-USER-MOV-NUM TO MOV-NUM.
 
-           MOVE "OPEN INPUT F-MOVIMIENTOS" TO ERROR-OP.
            OPEN INPUT F-MOVIMIENTOS.
            IF FSM NOT = "00" 
                GO TO PSYS-ERR.
 
-           MOVE "READ F-MOVIMIENTOS" TO ERROR-OP.
            READ F-MOVIMIENTOS INVALID KEY GO TO PSYS-ERR.
 
            MOVE MOV-SALDOPOS-ENT TO SALDO-USUARIO-ENT.
@@ -251,7 +246,7 @@
               BILLETES-20 = 0 AND
               BILLETES-50 = 0
                DISPLAY(18,19) "Introduzca al menos un billete"
-                   WITH FOREGROUND-COLOR IS BLACK 
+                   WITH FOREGROUND-COLOR IS WHITE 
                         BACKGROUND-COLOR IS RED
                GO TO CONF2
            END-IF.
@@ -263,11 +258,7 @@
            COMPUTE CENT-IMPOR-USER = EURENT-USUARIO * 100.
            ADD CENT-IMPOR-USER TO CENT-ACUMULADOR.
 
-           *> TODO SI ESC SALIR NO A LA PANTALLA DE CONFIRMACION
-
-
        INSERTAR-MOVIMIENTO SECTION.
-              MOVE "OPEN I-O F-MOVIMIENTOS" TO ERROR-OP.
               OPEN I-O F-MOVIMIENTOS.
               IF FSM NOT = "00"
               GO TO PSYS-ERR.
@@ -299,7 +290,6 @@
            MOVE SALDO-USUARIO-ENT       TO MOV-SALDOPOS-ENT.
            MOVE SALDO-USUARIO-DEC       TO MOV-SALDOPOS-DEC.
 
-           MOVE "WRITE MOVIMIENTO-REG" TO ERROR-OP.
            WRITE MOVIMIENTO-REG INVALID KEY GO TO PSYS-ERR.
            CLOSE F-MOVIMIENTOS.
 
@@ -336,17 +326,12 @@
            CLOSE F-MOVIMIENTOS
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
-           *> TODO (9,25) el bueno
            DISPLAY(9,25) "Ha ocurrido un error interno"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
-           *>CLOSE F-MOVIMIENTOS.
-           *> TODO (11,32) el bueno volver a ponerlo luego
            DISPLAY(11,32) "Vuelva mas tarde"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
-           DISPLAY(18,18) "Operacion: " ERROR-OP.
-           DISPLAY(19,18) "FILE STATUS: " FSM.
 
            DISPLAY(24,33) "Enter - Aceptar".
 

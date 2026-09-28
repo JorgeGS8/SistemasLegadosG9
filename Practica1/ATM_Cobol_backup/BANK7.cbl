@@ -244,7 +244,7 @@
 
            DISPLAY BLANK-SCREEN.
            DISPLAY(2,26) "Cajero Automatico UnizarBank"
-               WITH FOREGROUND-COLOR IS 1.
+               WITH FOREGROUND-COLOR IS CYAN.
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
 
@@ -387,7 +387,7 @@
        SALDO-SUFICIENTE.
            DISPLAY BLANK-SCREEN.
            DISPLAY(2,26) "Cajero Automatico UnizarBank"
-               WITH FOREGROUND-COLOR IS 1.
+               WITH FOREGROUND-COLOR IS CYAN.
 
            MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA.
 
@@ -498,11 +498,14 @@
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY(06,22) "Compra de entradas de espectaculos".
            DISPLAY(08,27) "Lamentamos comunicarle que"
-               WITH BACKGROUND-COLOR RED.
+               WITH    FOREGROUND-COLOR WHITE
+                       BACKGROUND-COLOR RED.
            DISPLAY(9,9) "El espectaculo seleccionado no"
-               WITH BACKGROUND-COLOR RED.
+               WITH    FOREGROUND-COLOR WHITE
+                       BACKGROUND-COLOR RED.
            DISPLAY(9,40) "dispone de suficientes entradas"
-               WITH BACKGROUND-COLOR RED.
+               WITH    FOREGROUND-COLOR WHITE
+                       BACKGROUND-COLOR RED.
            DISPLAY(24,33) "Enter - Aceptar".
 
            GO TO VENTA-ERR-ENTER.
@@ -511,9 +514,11 @@
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY(6,22) "Compra de entradas de espectaculos".
            DISPLAY(8,27) "Lamentamos comunicarle que"
-               WITH BACKGROUND-COLOR RED.
+               WITH    FOREGROUND-COLOR WHITE
+                       BACKGROUND-COLOR RED.
            DISPLAY(9,28) "su saldo es insuficiente"
-               WITH BACKGROUND-COLOR RED.
+               WITH    FOREGROUND-COLOR WHITE
+                           BACKGROUND-COLOR RED.
            DISPLAY(24,33) "Enter - Aceptar".
 
        VENTA-ERR-ENTER.
@@ -634,10 +639,10 @@
 
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
            DISPLAY(9,25) "Ha ocurrido un error interno"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY(11,32) "Vuelva mas tarde"
-               WITH FOREGROUND-COLOR IS BLACK
+               WITH FOREGROUND-COLOR IS WHITE
                     BACKGROUND-COLOR IS RED.
            DISPLAY(24,33) "Enter - Aceptar".
 
