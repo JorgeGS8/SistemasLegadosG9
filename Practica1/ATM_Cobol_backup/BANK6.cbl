@@ -297,6 +297,15 @@
            COMPUTE CENT-IMPOR-USER = (EURENT-USUARIO * 100)
                                      + EURDEC-USUARIO.
 
+           IF CENT-IMPOR-USER = 0 THEN
+                   DISPLAY(20,19) "Importe debe ser mayor que 0,00 EUR"
+                    WITH    FOREGROUND-COLOR WHITE
+                            BACKGROUND-COLOR RED
+                   GO TO INDICAR-CTA-DST
+           END-IF.
+
+
+
            IF CENT-IMPOR-USER > CENT-SALDO-ORD-USER THEN
                    DISPLAY(20,19) "Indique una cantidad menor!!"
                     WITH    FOREGROUND-COLOR WHITE
