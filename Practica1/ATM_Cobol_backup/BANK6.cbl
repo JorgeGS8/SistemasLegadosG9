@@ -29,7 +29,7 @@
 
        DATA DIVISION.
        FILE SECTION.
-       
+
        FD TARJETAS
            LABEL RECORD STANDARD
            VALUE OF FILE-ID IS "tarjetas.ubd".
@@ -128,6 +128,8 @@
        77 ANO-TRF                  PIC  9(4).
        77 FECHA-EJEC-TRF           PIC  9(8).
        77 FECHA-HOY                PIC  9(8).
+       77 DIAS-MES                 PIC  9(2).
+       77 BISIESTO                 PIC  9.
 
        LINKAGE SECTION.
        77 TNUM                     PIC  9(16).
@@ -153,7 +155,7 @@
            05 FILLER LINE 10 COL 41 VALUE ",".
            05 FILLER LINE 10 COL 42 PIC 99 FROM MOV-SALDOPOS-DEC.
            05 FILLER LINE 10 COL 45 VALUE "EUR".
-        
+
        01 SELECCION-TIPO.
            05 FILLER LINE 18 COL 19 VALUE "Tipo de transferencia:".
            05 FILLER LINE 19 COL 19 VALUE "(P)untual / (M)ensual:".
@@ -333,9 +335,66 @@
                END-IF
            END-ACCEPT.
 
+
+           IF MES-TRF < 1 OR MES-TRF > 12 THEN
+               DISPLAY(22,19) "Mes incorrecto (1-12)"
+                   WITH FOREGROUND-COLOR WHITE
+                        BACKGROUND-COLOR RED
+               GO TO PEDIR-FECHA
+           END-IF
+
+           EVALUATE MES-TRF
+               WHEN 1
+               WHEN 3
+               WHEN 5
+               WHEN 7
+               WHEN 8
+               WHEN 10
+               WHEN 12
+                   MOVE 31 TO DIAS-MES
+               WHEN 4
+               WHEN 6
+               WHEN 9
+               WHEN 11
+                   MOVE 30 TO DIAS-MES
+               WHEN 2
+                   MOVE 0 TO BISIESTO
+
+                   IF FUNCTION MOD(ANO-TRF, 400) = 0
+                       MOVE 1 TO BISIESTO
+                   ELSE
+                       IF FUNCTION MOD(ANO-TRF, 4) = 0
+                           IF FUNCTION MOD(ANO-TRF, 100) NOT = 0
+                               MOVE 1 TO BISIESTO
+                           END-IF
+                       END-IF
+                   END-IF
+
+                   IF BISIESTO = 1
+                       MOVE 29 TO DIAS-MES
+                   ELSE
+                       MOVE 28 TO DIAS-MES
+                   END-IF
+               END-EVALUATE.
+
+               IF DIA-TRF < 1 OR DIA-TRF > DIAS-MES THEN
+                   DISPLAY(22,19) "Dia incorrecto para ese mes"
+                       WITH FOREGROUND-COLOR WHITE
+                           BACKGROUND-COLOR RED
+                   GO TO PEDIR-FECHA
+               END-IF.
+
            COMPUTE FECHA-EJEC-TRF = (ANO-TRF * 10000)
                                     + (MES-TRF * 100)
                                     + DIA-TRF.
+
+           IF FECHA-EJEC-TRF <= FECHA-HOY THEN
+               DISPLAY(22,19) "La fecha debe ser posterior a hoy"
+                   WITH FOREGROUND-COLOR WHITE
+                       BACKGROUND-COLOR RED
+               GO TO PEDIR-FECHA
+           END-IF
+
            GO TO REALIZAR-TRF-VERIFICACION.
 
 
