@@ -313,6 +313,13 @@
                    GO TO INDICAR-CTA-DST
            END-IF.
 
+           IF CUENTA-DESTINO = TNUM THEN
+                   DISPLAY(20,19) "No puede usar su propia cuenta"
+                   WITH    FOREGROUND-COLOR WHITE
+                           BACKGROUND-COLOR RED
+                   GO TO INDICAR-CTA-DST
+           END-IF.
+
            GO TO INDICAR-TIPO.
 
        INDICAR-TIPO.
