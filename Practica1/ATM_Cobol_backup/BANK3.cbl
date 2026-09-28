@@ -290,7 +290,7 @@
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
 
            OPEN INPUT F-MOVIMIENTOS.
-               IF FSM <> 30
+               IF FSM NOT = "00"
                    GO TO PSYS-ERR.
 
        POSICIONAR-FINAL.
