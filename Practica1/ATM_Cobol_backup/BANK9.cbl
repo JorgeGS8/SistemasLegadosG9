@@ -73,6 +73,12 @@
        77 FECHA-REF                PIC  9(8).
        77 FECHA-MAX                PIC  9(8).
 
+       77 DIAS-MES                 PIC 9(2).
+       77 BISIESTO                 PIC 9.
+       77 DIA-EJEC                 PIC 9(2).
+       77 MES-EJEC                 PIC 9(2).
+       77 ANO-EJEC                 PIC 9(4).
+
        01 FECHA-VISIBLE.
            05 FV-ANO               PIC  9(4).
            05 FV-MES               PIC  9(2).
@@ -254,7 +260,8 @@
            IF TRF-TIPO = "P"
                MOVE TRF-FECHA-EJEC TO FECHA-REF
            ELSE
-               MOVE TRF-FECHA-CREAC TO FECHA-REF.
+               PERFORM CALCULAR-FECHA-MENSUAL
+           END-IF.
 
            IF FECHA-REF < FECHA-MIN
                GO TO LEER-TRF.
@@ -320,6 +327,83 @@
                DISPLAY FILA-TRANSFERENCIA-IMPAR
            END-IF.
 
+              CALCULAR-FECHA-MENSUAL.
+
+           MOVE FUNCTION CURRENT-DATE TO CAMPOS-FECHA
+
+           MOVE ANO TO ANO-EJEC
+           MOVE MES TO MES-EJEC
+
+           MOVE TRF-DIA-MES TO DIA-EJEC
+
+           PERFORM CALCULAR-DIAS-MES
+
+           IF DIA-EJEC > DIAS-MES
+               MOVE DIAS-MES TO DIA-EJEC
+           END-IF
+
+           IF DIA < DIA-EJEC
+               COMPUTE FECHA-REF = (ANO-EJEC * 10000)
+                                  + (MES-EJEC * 100)
+                                  + DIA-EJEC
+           ELSE
+               ADD 1 TO MES-EJEC
+
+               IF MES-EJEC > 12
+                   MOVE 1 TO MES-EJEC
+                   ADD 1 TO ANO-EJEC
+               END-IF
+
+               PERFORM CALCULAR-DIAS-MES
+
+               IF TRF-DIA-MES > DIAS-MES
+                   MOVE DIAS-MES TO DIA-EJEC
+               ELSE
+                   MOVE TRF-DIA-MES TO DIA-EJEC
+               END-IF
+
+               COMPUTE FECHA-REF = (ANO-EJEC * 10000)
+                                  + (MES-EJEC * 100)
+                                  + DIA-EJEC
+           END-IF.
+
+
+       CALCULAR-DIAS-MES.
+
+           EVALUATE MES-EJEC
+
+               WHEN 1
+               WHEN 3
+               WHEN 5
+               WHEN 7
+               WHEN 8
+               WHEN 10
+               WHEN 12
+                   MOVE 31 TO DIAS-MES
+
+               WHEN 4
+               WHEN 6
+               WHEN 9
+               WHEN 11
+                   MOVE 30 TO DIAS-MES
+
+               WHEN 2
+                   IF FUNCTION MOD(ANO-EJEC, 400) = 0
+                       MOVE 29 TO DIAS-MES
+                   ELSE
+                       IF FUNCTION MOD(ANO-EJEC, 100) = 0
+                           MOVE 28 TO DIAS-MES
+                       ELSE
+                           IF FUNCTION MOD(ANO-EJEC, 4) = 0
+                               MOVE 29 TO DIAS-MES
+                           ELSE
+                               MOVE 28 TO DIAS-MES
+                           END-IF
+                       END-IF
+                   END-IF
+
+           END-EVALUATE.
+
        PSYS-ERR.
            CLOSE F-TRANSFERENCIAS.
            PERFORM IMPRIMIR-CABECERA THRU IMPRIMIR-CABECERA.
@@ -336,5 +420,3 @@
                EXIT PROGRAM
            ELSE
                GO TO PSYS-ERR-ENTER.
-
-               
