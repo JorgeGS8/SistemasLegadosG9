@@ -81,6 +81,36 @@ public class MainWindow extends JFrame {
         }
     }
 
+    private boolean fechaValida(String fecha) {
+        if (fecha == null || fecha.length() != 4)  {
+            return false;
+        }
+
+        // Comprobar que los 4 caracteres son numeros
+        for (int i = 0; i < fecha.length(); i++) {
+            if (!Character.isDigit(fecha.charAt(i))) {
+                return false;
+            }
+        }
+
+        int dia = Integer.parseInt(fecha.substring(0, 2));
+        int mes = Integer.parseInt(fecha.substring(2, 4));
+
+        // Comprobar mes
+        if (mes < 1 || mes > 12) {
+            return false;
+        }
+
+        // Días maximos de cada mes
+        int[] diasPorMes = {
+            31, 28, 31, 30, 31, 30,
+            31, 31, 30, 31, 30, 31
+        };
+
+        return dia >= 1 && dia <= diasPorMes[mes - 1];
+    }
+
+
     private void nuevaTarea() {
         if (operacionEnCurso) return;
 
@@ -102,7 +132,15 @@ public class MainWindow extends JFrame {
 
         if (opcion != JOptionPane.OK_OPTION) return;
 
-        int tipo = cmbTipo.getSelectedIndex() == 0
+        if (!fechaValida(fecha.getText())) {
+            JOptionPane.showMessageDialog(
+                this,
+                "La fecha debe tener el formato DDMM y ser válida."
+            );
+            return;
+        }
+
+                int tipo = cmbTipo.getSelectedIndex() == 0
                 ? Mainframe3270.TIPO_GENERAL
                 : Mainframe3270.TIPO_ESPECIFICA;
 
