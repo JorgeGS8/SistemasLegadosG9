@@ -27,6 +27,22 @@ public class Mainframe3270 {
         }
     }
 
+    private String prepararTexto(String texto) {
+
+        if (texto == null) {
+            return "";
+        }
+
+        // Escapar caracteres que puedan interferir
+        texto = texto.replace("\\", "\\\\");
+        texto = texto.replace("\"", "\\\"");
+
+        // Eliminamos saltos de linea
+        texto = texto.replace("\n", " ");
+        texto = texto.replace("\r", " ");
+
+        return texto;
+    }
     
     private String sincronizar() throws IOException {
         enviarComando("Wait(60, InputField)");
@@ -215,13 +231,13 @@ public class Mainframe3270 {
         pausa(800);
 
         if (tipo == TIPO_ESPECIFICA) {
-            if (nombre != null && !nombre.isEmpty()) enviarComando("String(\"" + nombre + "\")");
+            if (nombre != null && !nombre.isEmpty()) enviarComando("String(\"" + prepararTexto(nombre) + "\")");
             enviarComando("Enter()");
             sincronizar();
             pausa(800);
         }
 
-        if (descripcion != null && !descripcion.isEmpty()) enviarComando("String(\"" + descripcion + "\")");
+        if (descripcion != null && !descripcion.isEmpty()) enviarComando("String(\"" + prepararTexto(descripcion) + "\")");
         enviarComando("Enter()");
         sincronizar();
         pausa(1200);
