@@ -249,10 +249,22 @@ public class Mainframe3270 {
 
     
     public void salir() throws IOException {
+
+    if (proceso == null || !proceso.isAlive()) {
+        return;
+    }
+
+    try {
         enviarComando("String(0)");
         enviarComando("Enter()");
+
+        // Damos tiempo al mainframe a procesar la salida
+        pausa(1000);
+
+    } finally {
         proceso.destroy();
     }
+}
 
 
     // ---------------------------------------------------------------
