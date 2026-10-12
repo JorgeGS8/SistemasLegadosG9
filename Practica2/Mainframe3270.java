@@ -141,7 +141,7 @@ public class Mainframe3270 {
         System.out.println(pantalla);
 
         // Usuario
-        enviarComando("String(grupo_09)");
+        enviarComando("String(" + prepararTexto(usuario) + ")");
         enviarComando("Enter()");
         sincronizar();
 
@@ -150,7 +150,7 @@ public class Mainframe3270 {
         System.out.println(pantalla);
 
         // Password
-        enviarComando("String(secreto6)");
+        enviarComando("String(" + prepararTexto(password) + ")");
         enviarComando("Enter()");
         sincronizar();
 
