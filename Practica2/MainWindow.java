@@ -5,6 +5,8 @@ import java.util.List;
 
 //Nuevo comentario para q me deje el commit xd
 public class MainWindow extends JFrame {
+    private JPanel contenedorPrincipal;
+    private CardLayout cardLayout;
 
     // Componentes Login
     private JPanel panelLogin;
@@ -39,6 +41,11 @@ public class MainWindow extends JFrame {
         setSize(900, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        cardLayout = new CardLayout();
+        contenedorPrincipal = new JPanel(cardLayout);
+
+        add(contenedorPrincipal, BorderLayout.CENTER);
     }
 
     /*public MainWindow(Mainframe3270 mf) {
@@ -102,11 +109,9 @@ public class MainWindow extends JFrame {
         panelLogin.add(new JLabel());
         panelLogin.add(btnLogin);
 
-        add(panelLogin, BorderLayout.CENTER);
+        contenedorPrincipal.add(panelLogin, "LOGIN");
 
         btnLogin.addActionListener(e -> iniciarSesion());
-
-        panelLogin.setVisible(false);
     }
 
     private void construirPanelTareas() {
@@ -138,7 +143,7 @@ public class MainWindow extends JFrame {
 
         panelTareas.add(panelBotones, BorderLayout.SOUTH);
 
-        add(panelTareas, BorderLayout.CENTER);
+        contenedorPrincipal.add(panelTareas, "TAREAS");
 
         btnRefrescar.addActionListener(e -> refrescarTareas());
         btnNueva.addActionListener(e -> nuevaTarea());
@@ -147,18 +152,14 @@ public class MainWindow extends JFrame {
             try { mainframe.salir(); } catch (Exception ex) { ex.printStackTrace(); }
             dispose();
         });
-
-        panelTareas.setVisible(false);
     }
 
     private void mostrarPanelLogin() {
-        panelLogin.setVisible(true);
-        panelTareas.setVisible(false);
+        cardLayout.show(contenedorPrincipal, "LOGIN");
     }
 
     private void mostrarPanelTareas() {
-        panelLogin.setVisible(false);
-        panelTareas.setVisible(true);
+        cardLayout.show(contenedorPrincipal, "TAREAS");
     }
 
     //FIXME temporal
