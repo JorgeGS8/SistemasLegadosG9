@@ -6,6 +6,14 @@ import java.util.List;
 //Nuevo comentario para q me deje el commit xd
 public class MainWindow extends JFrame {
 
+    // Componentes Login
+    private JPanel panelLogin;
+    private JTextField txtUsuario;
+    private JPasswordField txtContrasena;
+    private JButton btnLogin;
+
+    // Componentes Tareas
+    private JPanel panelTareas;
     private JTable tablaTareas;
     private DefaultTableModel modeloTabla;
     private Mainframe3270 mainframe;
@@ -16,6 +24,24 @@ public class MainWindow extends JFrame {
     private JButton btnSalir;
 
     public MainWindow(Mainframe3270 mf) {
+        this.mainframe = mf;
+
+        configurarVentana();
+        construirPanelLogin();
+        construirPanelTareas();
+
+        mostrarPanelLogin();
+        setVisible(true);
+    }
+
+    void configurarVentana() {
+        setTitle("Tareas");
+        setSize(900, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+    }
+
+    /*public MainWindow(Mainframe3270 mf) {
         this.mainframe = mf;
 
         setTitle("Tareas");
@@ -52,7 +78,7 @@ public class MainWindow extends JFrame {
 
         setVisible(true);
         refrescarTareas();
-    }
+    }*/
 
     /** Bloquea los botones mientras hay una operación MUY IMPORTANTE PORQ ANTES SIN ESTO AUNQ NO HUBIERA TERMINADO 
      * y hubiera pasado un tiempo podian explotar los campos al poner nuevas tareas
@@ -61,6 +87,92 @@ public class MainWindow extends JFrame {
         btnNueva.setEnabled(habilitados);
         btnRefrescar.setEnabled(habilitados);
         btnSalir.setEnabled(habilitados);
+    }
+
+    private void construirPanelLogin() {
+        panelLogin = new JPanel(new GridLayout(3, 2));
+        txtUsuario = new JTextField();
+        txtContrasena = new JPasswordField();
+        btnLogin = new JButton("Iniciar sesión");
+
+        panelLogin.add(new JLabel("Usuario:"));
+        panelLogin.add(txtUsuario);
+        panelLogin.add(new JLabel("Contraseña:"));
+        panelLogin.add(txtContrasena);
+        panelLogin.add(new JLabel());
+        panelLogin.add(btnLogin);
+
+        add(panelLogin, BorderLayout.CENTER);
+
+        btnLogin.addActionListener(e -> iniciarSesion());
+
+        panelLogin.setVisible(false);
+    }
+
+    private void construirPanelTareas() {
+        panelTareas = new JPanel(new BorderLayout());
+
+        modeloTabla = new DefaultTableModel(
+            new String[]{"Tipo", "Fecha", "Nombre", "Descripción"}, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tablaTareas = new JTable(modeloTabla);
+        panelTareas.add(
+            new JScrollPane(tablaTareas),
+            BorderLayout.CENTER
+            );
+
+        JPanel panelBotones = new JPanel();
+
+        btnNueva = new JButton("Nueva");
+        btnRefrescar = new JButton("Refrescar");
+        btnSalir = new JButton("Salir");
+
+        panelBotones.add(btnNueva);
+        panelBotones.add(btnRefrescar);
+        panelBotones.add(btnSalir);
+
+        panelTareas.add(panelBotones, BorderLayout.SOUTH);
+
+        add(panelTareas, BorderLayout.CENTER);
+
+        btnRefrescar.addActionListener(e -> refrescarTareas());
+        btnNueva.addActionListener(e -> nuevaTarea());
+
+        btnSalir.addActionListener(e -> {
+            try { mainframe.salir(); } catch (Exception ex) { ex.printStackTrace(); }
+            dispose();
+        });
+
+        panelTareas.setVisible(false);
+    }
+
+    private void mostrarPanelLogin() {
+        panelLogin.setVisible(true);
+        panelTareas.setVisible(false);
+    }
+
+    private void mostrarPanelTareas() {
+        panelLogin.setVisible(false);
+        panelTareas.setVisible(true);
+    }
+
+    //FIXME temporal
+    private void iniciarSesion() {
+        try {
+            mainframe.iniciar(txtUsuario.getText(), new String(txtContrasena.getPassword()));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al iniciar sesión: " + e.getMessage());
+            return;
+        }
+
+        mostrarPanelTareas();
+        refrescarTareas();
+    
     }
 
     private void refrescarTareas() {

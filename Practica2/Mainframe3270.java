@@ -120,7 +120,8 @@ public class Mainframe3270 {
     // ---------------------------------------------------------------
     // Iniciar lanzando el sistema legaddo con el grupo y el secreto6
     // ---------------------------------------------------------------
-    public void iniciar() throws IOException {
+    // FIXME
+    public void iniciar(String usuario, String password) throws IOException {
         proceso = new ProcessBuilder(
             "C:\\Program Files\\wc3270\\ws3270.exe"
         ).start();
