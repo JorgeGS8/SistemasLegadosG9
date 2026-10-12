@@ -41,6 +41,9 @@ public class Mainframe3270 {
         texto = texto.replace("\n", " ");
         texto = texto.replace("\r", " ");
 
+        // Remplazar espacios por guiones bajos para evitar problemas con el terminal
+        texto = texto.replace(" ", "_");
+
         return texto;
     }
     
@@ -204,7 +207,10 @@ public class Mainframe3270 {
         // Salir a MAIN MENU
         enviarComando("String(3)");
         enviarComando("Enter()");
-        sincronizar();
+        // FIXME
+        String temp3 = sincronizar();
+        System.out.println("=== SALIDA A MAIN MENU ===");
+        System.out.println(temp3);
 
         return todas;
     }
