@@ -97,7 +97,9 @@ public class MainWindow extends JFrame {
     }
 
     private void construirPanelLogin() {
-        panelLogin = new JPanel(new GridLayout(3, 2));
+        JPanel tarjetaLogin = new JPanel(new GridBagLayout());
+        panelLogin = new JPanel(new GridLayout(3, 2, 8, 8));
+        tarjetaLogin.add(panelLogin);
         txtUsuario = new JTextField();
         txtContrasena = new JPasswordField();
         btnLogin = new JButton("Iniciar sesión");
@@ -109,7 +111,7 @@ public class MainWindow extends JFrame {
         panelLogin.add(new JLabel());
         panelLogin.add(btnLogin);
 
-        contenedorPrincipal.add(panelLogin, "LOGIN");
+        contenedorPrincipal.add(tarjetaLogin, "LOGIN");
 
         btnLogin.addActionListener(e -> iniciarSesion());
     }
