@@ -4,17 +4,15 @@
 :: Cambiar al directorio del script; /d permite cambiar de unidad si es necesario
 cd /d "%~dp0" 
 
-if not exist "Main.class" (
-    echo Compilando la aplicacion...
-    javac -encoding UTF-8 Main.java MainWindow.java Mainframe3270.java
+echo Compilando la aplicacion...
+javac -encoding UTF-8 Main.java MainWindow.java Mainframe3270.java LoginException.java
 
-    if errorlevel 1 (
-        echo.
-        echo ERROR: No se pudo compilar la aplicacion.
-        call :errorMessage
-        pause
-        exit /b 1
-    )
+if errorlevel 1 (
+    echo.
+    echo ERROR: No se pudo compilar la aplicacion.
+    call :errorMessage
+    pause
+    exit /b 1
 )
 
 echo Iniciando la aplicacion...

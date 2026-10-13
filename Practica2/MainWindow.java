@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 
 //Nuevo comentario para q me deje el commit xd
@@ -167,9 +168,48 @@ public class MainWindow extends JFrame {
     //FIXME temporal
     private void iniciarSesion() {
         try {
-            mainframe.iniciar(txtUsuario.getText(), new String(txtContrasena.getPassword()));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al iniciar sesión: " + e.getMessage());
+            mainframe.iniciarSesion(txtUsuario.getText(), new String(txtContrasena.getPassword()));
+        } catch (LoginException e) {
+            txtUsuario.setText("");
+            txtContrasena.setText("");
+
+            switch (e.getTipo()) {
+                case USUARIO_NO_AUTORIZADO:
+                    // Estamos en el menu que pider Userid
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                    break;
+                case USUARIO_INCORRECTO:
+                    // Estamos en el menu que pider Userid
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                    break;
+                case CONTRASENA_INCORRECTA:
+                    // 1 fallo -> Menu que pide contraseña, 2 fallos -> Menu de Hermes
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                    break;
+                case USUARIO_EN_USO:
+                    // Menu intermedio -ENTER-> Menu de Hermes
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(this,"Error de autenticación: " + e.getMessage());
+                    break;
+            }
+
+            try {
+                mainframe.volverAlHercules();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Error al volver al menú de inicio: " + ex.getMessage()
+                );
+            }
+
+            return;
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Error de comunicación con el sistema: " + e.getMessage()
+            );
             return;
         }
 
