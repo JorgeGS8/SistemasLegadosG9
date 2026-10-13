@@ -3,6 +3,18 @@ import java.util.*;
 
 public class Mainframe3270 {
 
+    private enum Estado {
+        DESCONECTADO,
+        PANTALLA_HERCULES,
+        PANTALLA_LOGIN_USUARIO,
+        PANTALLA_LOGIN_PASSWORD,
+        PANTALLA_LOGIN_USUARIO_EN_USO,
+        AUTENTICADO,
+        EN_TAREAS
+    }   
+
+    private Estado estado = Estado.DESCONECTADO;
+
     public static final int TIPO_GENERAL    = 1;
     public static final int TIPO_ESPECIFICA = 2;
 
@@ -120,7 +132,7 @@ public class Mainframe3270 {
     // ---------------------------------------------------------------
     // Iniciar lanzando el sistema legaddo con el grupo y el secreto6
     // ---------------------------------------------------------------
-    public void iniciar() throws IOException {
+    public void iniciarConexion() throws IOException {
         proceso = new ProcessBuilder(
             "C:\\Program Files\\wc3270\\ws3270.exe"
         ).start();
@@ -131,38 +143,93 @@ public class Mainframe3270 {
         enviarComando("Connect(155.210.152.51:3270)");
         pausa(2000);
 
+        estado = Estado.PANTALLA_HERCULES;
+
+    }
+
+    public void iniciarSesion(String usuario, String password) throws IOException, LoginException {
+        prepararPantallaLogin();
+        enviarUsuario(usuario);
+        enviarPassword(password);
+        completarInicioSesion();
+    }
+
+    // ---------------------------------------------------------------
+    // Iniciar sesion, hay que dividir porque la pantalla cambia 
+    // dependiendo de la fase de login y si falla en una parte continuar
+    // desde ahí.
+    // ---------------------------------------------------------------
+    public void prepararPantallaLogin() throws IOException {
         // Pantalla Hércules
         enviarComando("Enter()");
         sincronizar();
 
+        estado = Estado.PANTALLA_LOGIN_USUARIO;
+    }
+
+    public void enviarUsuario(String usuario) throws IOException, LoginException {
         String pantalla = leerPantalla();
         System.out.println("=== PANTALLA LOGIN ===");
         System.out.println(pantalla);
 
         // Usuario
-        enviarComando("String(grupo_09)");
+        enviarComando("String(" + prepararTexto(usuario) + ")");
         enviarComando("Enter()");
         sincronizar();
 
         pantalla = leerPantalla();
+        if (pantalla.contains("Userid is not authorized")) {
+            throw new LoginException(
+                LoginException.Tipo.USUARIO_NO_AUTORIZADO,
+                "Usuario no autorizado"
+            );
+        } else if (pantalla.contains("Userid is incorrect")) {
+            throw new LoginException(
+                LoginException.Tipo.USUARIO_INCORRECTO,
+                "Usuario es incorrecto"
+            );
+        }
+
         System.out.println("=== PANTALLA PASSWORD ===");
         System.out.println(pantalla);
 
+        estado = Estado.PANTALLA_LOGIN_PASSWORD;
+    }
+
+    public void enviarPassword(String password) throws IOException, LoginException {
+
         // Password
-        enviarComando("String(secreto6)");
+        enviarComando("String(" + prepararTexto(password) + ")");
         enviarComando("Enter()");
         sincronizar();
 
-        pantalla = leerPantalla();
+        String pantalla = leerPantalla();
+
+        if (pantalla.contains("Password incorrect")) {
+            throw new LoginException(
+                LoginException.Tipo.CONTRASENA_INCORRECTA,
+                "Contraseña incorrecta"
+            );
+        } else if (pantalla.contains("Userid is in use")) {
+            throw new LoginException(
+                LoginException.Tipo.USUARIO_EN_USO,
+                "Usuario en uso"
+            );
+        }
+
         System.out.println("=== PANTALLA POST-LOGIN ===");
         System.out.println(pantalla);
-
         if (pantalla.contains("Press ENTER")) {
             enviarComando("Enter()");
             sincronizar();
         }
 
-        pantalla = leerPantalla();
+        estado = Estado.AUTENTICADO;
+    }
+
+    public void completarInicioSesion() throws IOException {
+
+        String pantalla = leerPantalla();
         System.out.println("=== PANTALLA MENU MUSIC ===");
         System.out.println(pantalla);
 
@@ -174,8 +241,31 @@ public class Mainframe3270 {
         pantalla = leerPantalla();
         System.out.println("=== MENÚ PRINCIPAL TAREAS ===");
         System.out.println(pantalla);
+
+        estado = Estado.EN_TAREAS;
     }
 
+    public void volverAlHercules() throws IOException {
+        switch (estado) {
+            case PANTALLA_LOGIN_USUARIO:
+                // F3
+                enviarComando("PF(3)");
+                estado = Estado.PANTALLA_HERCULES;
+                break;
+            case PANTALLA_LOGIN_PASSWORD:
+                // F3
+                enviarComando("PF(3)");
+                estado = Estado.PANTALLA_HERCULES;
+                break;
+            case PANTALLA_LOGIN_USUARIO_EN_USO:
+                // F3
+                enviarComando("PF(3)");
+                estado = Estado.PANTALLA_HERCULES;
+                break;
+            default:
+                // No hacer nada
+        }
+    }
 
     // ---------------------------------------------------------------
     // Listar las tareicas

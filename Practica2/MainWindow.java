@@ -1,11 +1,22 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 
 //Nuevo comentario para q me deje el commit xd
 public class MainWindow extends JFrame {
+    private JPanel contenedorPrincipal;
+    private CardLayout cardLayout;
 
+    // Componentes Login
+    private JPanel panelLogin;
+    private JTextField txtUsuario;
+    private JPasswordField txtContrasena;
+    private JButton btnLogin;
+
+    // Componentes Tareas
+    private JPanel panelTareas;
     private JTable tablaTareas;
     private DefaultTableModel modeloTabla;
     private Mainframe3270 mainframe;
@@ -16,6 +27,29 @@ public class MainWindow extends JFrame {
     private JButton btnSalir;
 
     public MainWindow(Mainframe3270 mf) {
+        this.mainframe = mf;
+
+        configurarVentana();
+        construirPanelLogin();
+        construirPanelTareas();
+
+        mostrarPanelLogin();
+        setVisible(true);
+    }
+
+    void configurarVentana() {
+        setTitle("Tareas");
+        setSize(900, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        cardLayout = new CardLayout();
+        contenedorPrincipal = new JPanel(cardLayout);
+
+        add(contenedorPrincipal, BorderLayout.CENTER);
+    }
+
+    /*public MainWindow(Mainframe3270 mf) {
         this.mainframe = mf;
 
         setTitle("Tareas");
@@ -52,7 +86,7 @@ public class MainWindow extends JFrame {
 
         setVisible(true);
         refrescarTareas();
-    }
+    }*/
 
     /** Bloquea los botones mientras hay una operación MUY IMPORTANTE PORQ ANTES SIN ESTO AUNQ NO HUBIERA TERMINADO 
      * y hubiera pasado un tiempo podian explotar los campos al poner nuevas tareas
@@ -61,6 +95,127 @@ public class MainWindow extends JFrame {
         btnNueva.setEnabled(habilitados);
         btnRefrescar.setEnabled(habilitados);
         btnSalir.setEnabled(habilitados);
+    }
+
+    private void construirPanelLogin() {
+        JPanel tarjetaLogin = new JPanel(new GridBagLayout());
+        panelLogin = new JPanel(new GridLayout(3, 2, 8, 8));
+        tarjetaLogin.add(panelLogin);
+        txtUsuario = new JTextField();
+        txtContrasena = new JPasswordField();
+        btnLogin = new JButton("Iniciar sesión");
+
+        panelLogin.add(new JLabel("Usuario:"));
+        panelLogin.add(txtUsuario);
+        panelLogin.add(new JLabel("Contraseña:"));
+        panelLogin.add(txtContrasena);
+        panelLogin.add(new JLabel());
+        panelLogin.add(btnLogin);
+
+        contenedorPrincipal.add(tarjetaLogin, "LOGIN");
+
+        btnLogin.addActionListener(e -> iniciarSesion());
+    }
+
+    private void construirPanelTareas() {
+        panelTareas = new JPanel(new BorderLayout());
+
+        modeloTabla = new DefaultTableModel(
+            new String[]{"Tipo", "Fecha", "Nombre", "Descripción"}, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tablaTareas = new JTable(modeloTabla);
+        panelTareas.add(
+            new JScrollPane(tablaTareas),
+            BorderLayout.CENTER
+            );
+
+        JPanel panelBotones = new JPanel();
+
+        btnNueva = new JButton("Nueva");
+        btnRefrescar = new JButton("Refrescar");
+        btnSalir = new JButton("Salir");
+
+        panelBotones.add(btnNueva);
+        panelBotones.add(btnRefrescar);
+        panelBotones.add(btnSalir);
+
+        panelTareas.add(panelBotones, BorderLayout.SOUTH);
+
+        contenedorPrincipal.add(panelTareas, "TAREAS");
+
+        btnRefrescar.addActionListener(e -> refrescarTareas());
+        btnNueva.addActionListener(e -> nuevaTarea());
+
+        btnSalir.addActionListener(e -> {
+            try { mainframe.salir(); } catch (Exception ex) { ex.printStackTrace(); }
+            dispose();
+        });
+    }
+
+    private void mostrarPanelLogin() {
+        cardLayout.show(contenedorPrincipal, "LOGIN");
+    }
+
+    private void mostrarPanelTareas() {
+        cardLayout.show(contenedorPrincipal, "TAREAS");
+    }
+
+    //FIXME temporal
+    private void iniciarSesion() {
+        try {
+            mainframe.iniciarSesion(txtUsuario.getText(), new String(txtContrasena.getPassword()));
+        } catch (LoginException e) {
+            txtUsuario.setText("");
+            txtContrasena.setText("");
+
+            switch (e.getTipo()) {
+                case USUARIO_NO_AUTORIZADO:
+                    // Estamos en el menu que pider Userid
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                    break;
+                case USUARIO_INCORRECTO:
+                    // Estamos en el menu que pider Userid
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                    break;
+                case CONTRASENA_INCORRECTA:
+                    // 1 fallo -> Menu que pide contraseña, 2 fallos -> Menu de Hermes
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                    break;
+                case USUARIO_EN_USO:
+                    // Menu intermedio -ENTER-> Menu de Hermes
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(this,"Error de autenticación: " + e.getMessage());
+                    break;
+            }
+
+            try {
+                mainframe.volverAlHercules();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Error al volver al menú de inicio: " + ex.getMessage()
+                );
+            }
+
+            return;
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Error de comunicación con el sistema: " + e.getMessage()
+            );
+            return;
+        }
+
+        mostrarPanelTareas();
+        refrescarTareas();
+    
     }
 
     private void refrescarTareas() {
