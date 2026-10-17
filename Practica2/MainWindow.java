@@ -49,45 +49,6 @@ public class MainWindow extends JFrame {
         add(contenedorPrincipal, BorderLayout.CENTER);
     }
 
-    /*public MainWindow(Mainframe3270 mf) {
-        this.mainframe = mf;
-
-        setTitle("Tareas");
-        setSize(900, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-
-        modeloTabla = new DefaultTableModel(
-            new String[]{"Tipo", "Fecha", "Nombre", "Descripción"}, 0
-        ) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tablaTareas = new JTable(modeloTabla);
-        add(new JScrollPane(tablaTareas), BorderLayout.CENTER);
-
-        JPanel panelBotones = new JPanel();
-        btnNueva = new JButton("Nueva");
-        btnRefrescar = new JButton("Refrescar");
-        btnSalir = new JButton("Salir");
-        panelBotones.add(btnNueva);
-        panelBotones.add(btnRefrescar);
-        panelBotones.add(btnSalir);
-        add(panelBotones, BorderLayout.SOUTH);
-
-        btnRefrescar.addActionListener(e -> refrescarTareas());
-        btnNueva.addActionListener(e -> nuevaTarea());
-        btnSalir.addActionListener(e -> {
-            try { mainframe.salir(); } catch (Exception ex) { ex.printStackTrace(); }
-            dispose();
-        });
-
-        setVisible(true);
-        refrescarTareas();
-    }*/
-
     /** Bloquea los botones mientras hay una operación MUY IMPORTANTE PORQ ANTES SIN ESTO AUNQ NO HUBIERA TERMINADO 
      * y hubiera pasado un tiempo podian explotar los campos al poner nuevas tareas
      */
@@ -167,6 +128,29 @@ public class MainWindow extends JFrame {
 
     //FIXME temporal
     private void iniciarSesion() {
+        // Chequear campos
+        // userID
+        if (txtUsuario.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El campo de usuario no puede estar vacío.");
+            return;
+        }
+
+        if (txtUsuario.getText().length() > 50) {
+            JOptionPane.showMessageDialog(this, "Límite de caracteres para el usuario superado (50).");
+            return;
+        }
+
+        // password
+        if (txtContrasena.getPassword().length == 0) {
+            JOptionPane.showMessageDialog(this, "El campo de contraseña no puede estar vacío.");
+            return;
+        }
+
+        if (txtContrasena.getPassword().length > 52) {
+            JOptionPane.showMessageDialog(this, "Límite de caracteres para la contraseña superado (52).");
+            return;
+        }
+
         try {
             mainframe.iniciarSesion(txtUsuario.getText(), new String(txtContrasena.getPassword()));
         } catch (LoginException e) {
@@ -295,10 +279,27 @@ public class MainWindow extends JFrame {
             return;
         }
 
+        if (descripcion.getText().length() > 80) {
+            JOptionPane.showMessageDialog(
+                this,
+                "La descripción no puede superar los 80 caracteres."
+            );
+            return;
+        }
+
+
                 int tipo = cmbTipo.getSelectedIndex() == 0
                 ? Mainframe3270.TIPO_GENERAL
                 : Mainframe3270.TIPO_ESPECIFICA;
 
+        if (tipo == Mainframe3270.TIPO_ESPECIFICA && nombre.getText().length() > 80) {
+            JOptionPane.showMessageDialog(
+                this,
+                "El nombre no puede superar los 80 caracteres."
+            );
+            return;
+        }
+        
         operacionEnCurso = true;
         setBotonesHabilitados(false);
         try {
