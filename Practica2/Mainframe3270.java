@@ -17,6 +17,9 @@ public class Mainframe3270 {
 
     public static final int TIPO_GENERAL    = 1;
     public static final int TIPO_ESPECIFICA = 2;
+    public static final int MAX_DESCRIPCION_GENERAL = 12;
+    public static final int MAX_NOMBRE_ESPECIFICA = 6;
+    public static final int MAX_DESCRIPCION_ESPECIFICA = 10;
 
     private Process proceso;
     private BufferedReader entrada;
@@ -311,6 +314,9 @@ public class Mainframe3270 {
     // Crear tareica
     // ---------------------------------------------------------------
     public void crearTarea(int tipo, String fecha, String nombre, String descripcion) throws IOException {
+        // Validar datos antes de enviar comandos
+        validarDatosTarea(tipo, fecha, nombre, descripcion);
+
         enviarComando("String(1)");
         enviarComando("Enter()");
         sincronizar();
@@ -341,6 +347,37 @@ public class Mainframe3270 {
         enviarComando("String(3)");
         enviarComando("Enter()");
         sincronizar();
+    }
+
+    private void validarDatosTarea(int tipo, String fecha, String nombre, String descripcion) {
+        if (tipo != TIPO_GENERAL && tipo != TIPO_ESPECIFICA) {
+            throw new IllegalArgumentException("Tipo de tarea no válido.");
+        }
+
+        if (fecha == null || fecha.isEmpty()) {
+            throw new IllegalArgumentException("La fecha no puede estar vacía.");
+        }
+
+        if (descripcion == null) {
+            throw new IllegalArgumentException("La descripción no puede ser nula.");
+        }
+
+        int limiteDescripcion = tipo == TIPO_GENERAL
+                ? MAX_DESCRIPCION_GENERAL
+                : MAX_DESCRIPCION_ESPECIFICA;
+        if (descripcion.length() > limiteDescripcion) {
+            throw new IllegalArgumentException(
+                "La descripción no puede superar los " + limiteDescripcion + " caracteres."
+            );
+        }
+
+        if (tipo == TIPO_ESPECIFICA
+                && nombre != null
+                && nombre.length() > MAX_NOMBRE_ESPECIFICA) {
+            throw new IllegalArgumentException(
+                "El nombre no puede superar los " + MAX_NOMBRE_ESPECIFICA + " caracteres."
+            );
+        }
     }
 
     
