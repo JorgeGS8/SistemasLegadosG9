@@ -426,6 +426,9 @@ public class Mainframe3270 {
                     ? cuerpo.substring(startMarker, endMarker).trim()
                     : cuerpo.substring(startMarker).trim();
 
+            // El sistema recibe los espacios como "_"; se muestran como espacios en la aplicación.
+            taskStr = taskStr.replace('_', ' ');
+
             // Parsear la tarea
             String[] partes = taskStr.split("\\s+");
             if (partes.length < 2) continue;
