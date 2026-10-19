@@ -126,7 +126,6 @@ public class MainWindow extends JFrame {
         cardLayout.show(contenedorPrincipal, "TAREAS");
     }
 
-    //FIXME temporal
     private void iniciarSesion() {
         // Chequear campos
         // userID

@@ -69,30 +69,37 @@ public class Mainframe3270 {
         String previa = "";
         String actual = "";
         int estables = 0;
+        StringBuilder paginas = new StringBuilder();
 
         for (int i = 0; i < 15; i++) {
             actual = leerPantalla();
 
             if (tieneMoreAlFinal(actual)) {
                 System.out.println("[INFO] 'More...' detectado, paso de página");
+                paginas.append(actual).append("\n");
                 enviarComando("Enter()");
                 enviarComando("Wait(60, InputField)");
                 pausa(1000);
-                previa = "";
+                actual = leerPantalla();
+                previa = actual;
                 estables = 0;
                 continue;
             }
 
             if (actual.equals(previa)) {
                 estables++;
-                if (estables >= 2) return actual;
+                if (estables >= 2) {
+                    paginas.append(actual);
+                    return paginas.toString();
+                }
             } else {
                 estables = 0;
             }
             previa = actual;
             pausa(500);
         }
-        return actual;
+        paginas.append(actual);
+        return paginas.toString();
     }
 
 
@@ -401,13 +408,14 @@ public class Mainframe3270 {
 
 
     // ---------------------------------------------------------------
-    // Parseo, convierte la pantalla cruda del terminal en una lista de tareas, aislando solo el último listado y quedándose con el tipo pedido.
+    // Parseo del listado de tareas, quedándose con el tipo pedido.
     // ---------------------------------------------------------------
     private List<String[]> parsearTareas(String pantalla, int tipoFiltro) {
         List<String[]> tareas = new ArrayList<>();
         String[] lineas = pantalla.split("\n");
 
-        // Localizar el FINAL del último bloque de tareas
+        // TOTAL TASK marca el final del listado. Las páginas anteriores se
+        // encuentran antes de ese marcador en la pantalla acumulada.
         int finBloque = -1;
         for (int i = lineas.length - 1; i >= 0; i--) {
             if (lineas[i].contains("TOTAL TASK")) {
@@ -417,20 +425,18 @@ public class Mainframe3270 {
         }
         if (finBloque == -1) return tareas;
 
-        // Va  pa atrás buscando el INICIO del bloque
-        int iniBloque = finBloque;
-        for (int i = finBloque - 1; i >= 0; i--) {
-            String l = lineas[i].trim();
-            if (l.startsWith("TASK ")) {
+        // Buscar la primera tarea del listado acumulado. No se busca hacia
+        // atrás desde TOTAL TASK porque las páginas están separadas por More...
+        int iniBloque = -1;
+        for (int i = 0; i < finBloque; i++) {
+            if (lineas[i].trim().startsWith("TASK ")) {
                 iniBloque = i;
-            } else if (l.isEmpty()) {
-                continue;
-            } else {
                 break;
             }
         }
+        if (iniBloque == -1) return tareas;
 
-        // Parsear SOLO ese bloque y filtrar por tipo
+        // Recorrer todas las páginas hasta el TOTAL TASK final.
         for (int i = iniBloque; i < finBloque; i++) {
             String linea = lineas[i].trim();
             if (!linea.startsWith("TASK ")) continue;
