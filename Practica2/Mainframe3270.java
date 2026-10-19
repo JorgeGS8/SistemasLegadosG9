@@ -56,7 +56,7 @@ public class Mainframe3270 {
         texto = texto.replace("\n", " ");
         texto = texto.replace("\r", " ");
 
-        // Remplazar espacios por guiones bajos para evitar problemas con el terminal
+        // Remplazar espacios por guiones bajos para evitar problemas con la terminal
         texto = texto.replace(" ", "_");
 
         return texto;
@@ -103,7 +103,7 @@ public class Mainframe3270 {
     }
 
 
-    /** Comprueba las últimas 10 líneas del buffer (el more ese). */
+    /** Comprueba las últimas 10 líneas del buffer (el more). */
     private boolean tieneMoreAlFinal(String pantalla) {
         String[] lineas = pantalla.split("\n");
         int desde = Math.max(0, lineas.length - 10);
@@ -140,7 +140,7 @@ public class Mainframe3270 {
 
 
     // ---------------------------------------------------------------
-    // Iniciar lanzando el sistema legaddo con el grupo y el secreto6
+    // Iniciar lanzando el sistema legado con el grupo y el secreto6
     // ---------------------------------------------------------------
     public void iniciarConexion() throws IOException {
         proceso = new ProcessBuilder(
@@ -243,7 +243,7 @@ public class Mainframe3270 {
         System.out.println("=== PANTALLA MENU MUSIC ===");
         System.out.println(pantalla);
 
-        // Lanzar tareas.c por lo q sea no es tasks.c
+        // Lanzar tareas.c 
         enviarComando("String(tareas.c)");
         enviarComando("Enter()");
         sincronizar();
@@ -278,7 +278,7 @@ public class Mainframe3270 {
     }
 
     // ---------------------------------------------------------------
-    // Listar las tareicas
+    // Listar las tarea
     // ---------------------------------------------------------------
     public List<String[]> listarTodasTareas() throws IOException {
         List<String[]> todas = new ArrayList<>();
@@ -318,7 +318,7 @@ public class Mainframe3270 {
 
 
     // ---------------------------------------------------------------
-    // Crear tareica
+    // Crear tarea
     // ---------------------------------------------------------------
     public void crearTarea(int tipo, String fecha, String nombre, String descripcion) throws IOException {
         // Validar datos antes de enviar comandos
@@ -390,21 +390,21 @@ public class Mainframe3270 {
     
     public void salir() throws IOException {
 
-    if (proceso == null || !proceso.isAlive()) {
-        return;
+        if (proceso == null || !proceso.isAlive()) {
+            return;
+        }
+
+        try {
+            enviarComando("String(0)");
+            enviarComando("Enter()");
+
+            // Damos tiempo al mainframe a procesar la salida
+            pausa(1000);
+
+        } finally {
+            proceso.destroy();
+        }
     }
-
-    try {
-        enviarComando("String(0)");
-        enviarComando("Enter()");
-
-        // Damos tiempo al mainframe a procesar la salida
-        pausa(1000);
-
-    } finally {
-        proceso.destroy();
-    }
-}
 
 
     // ---------------------------------------------------------------
