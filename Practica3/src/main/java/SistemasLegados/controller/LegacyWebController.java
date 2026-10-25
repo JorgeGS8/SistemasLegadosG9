@@ -1,0 +1,1 @@
+// Controlador que atiende la navegación del usuario. Sirve la página web principal y sus vistas HTML.

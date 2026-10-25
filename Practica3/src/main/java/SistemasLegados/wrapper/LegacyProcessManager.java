@@ -1,0 +1,2 @@
+// Gestiona el proceso del sistema operativo: lanza database.bat, comprueba si el proceso sigue vivo
+// y gestiona que la ventana de DOSBox se mantenga en primer plano cuando sea necesario interactuar con ella.
