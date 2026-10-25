@@ -17,6 +17,9 @@ public class Mainframe3270 {
 
     public static final int TIPO_GENERAL    = 1;
     public static final int TIPO_ESPECIFICA = 2;
+    public static final int MAX_DESCRIPCION_GENERAL = 12;
+    public static final int MAX_NOMBRE_ESPECIFICA = 6;
+    public static final int MAX_DESCRIPCION_ESPECIFICA = 10;
 
     private Process proceso;
     private BufferedReader entrada;
@@ -53,7 +56,7 @@ public class Mainframe3270 {
         texto = texto.replace("\n", " ");
         texto = texto.replace("\r", " ");
 
-        // Remplazar espacios por guiones bajos para evitar problemas con el terminal
+        // Remplazar espacios por guiones bajos para evitar problemas con la terminal
         texto = texto.replace(" ", "_");
 
         return texto;
@@ -66,34 +69,41 @@ public class Mainframe3270 {
         String previa = "";
         String actual = "";
         int estables = 0;
+        StringBuilder paginas = new StringBuilder();
 
         for (int i = 0; i < 15; i++) {
             actual = leerPantalla();
 
             if (tieneMoreAlFinal(actual)) {
                 System.out.println("[INFO] 'More...' detectado, paso de página");
+                paginas.append(actual).append("\n");
                 enviarComando("Enter()");
                 enviarComando("Wait(60, InputField)");
                 pausa(1000);
-                previa = "";
+                actual = leerPantalla();
+                previa = actual;
                 estables = 0;
                 continue;
             }
 
             if (actual.equals(previa)) {
                 estables++;
-                if (estables >= 2) return actual;
+                if (estables >= 2) {
+                    paginas.append(actual);
+                    return paginas.toString();
+                }
             } else {
                 estables = 0;
             }
             previa = actual;
             pausa(500);
         }
-        return actual;
+        paginas.append(actual);
+        return paginas.toString();
     }
 
 
-    /** Comprueba las últimas 10 líneas del buffer (el more ese). */
+    /** Comprueba las últimas 10 líneas del buffer (el more). */
     private boolean tieneMoreAlFinal(String pantalla) {
         String[] lineas = pantalla.split("\n");
         int desde = Math.max(0, lineas.length - 10);
@@ -130,7 +140,7 @@ public class Mainframe3270 {
 
 
     // ---------------------------------------------------------------
-    // Iniciar lanzando el sistema legaddo con el grupo y el secreto6
+    // Iniciar lanzando el sistema legado con el grupo y el secreto6
     // ---------------------------------------------------------------
     public void iniciarConexion() throws IOException {
         proceso = new ProcessBuilder(
@@ -233,7 +243,7 @@ public class Mainframe3270 {
         System.out.println("=== PANTALLA MENU MUSIC ===");
         System.out.println(pantalla);
 
-        // Lanzar tareas.c por lo q sea no es tasks.c
+        // Lanzar tareas.c 
         enviarComando("String(tareas.c)");
         enviarComando("Enter()");
         sincronizar();
@@ -268,7 +278,7 @@ public class Mainframe3270 {
     }
 
     // ---------------------------------------------------------------
-    // Listar las tareicas
+    // Listar las tarea
     // ---------------------------------------------------------------
     public List<String[]> listarTodasTareas() throws IOException {
         List<String[]> todas = new ArrayList<>();
@@ -308,9 +318,12 @@ public class Mainframe3270 {
 
 
     // ---------------------------------------------------------------
-    // Crear tareica
+    // Crear tarea
     // ---------------------------------------------------------------
     public void crearTarea(int tipo, String fecha, String nombre, String descripcion) throws IOException {
+        // Validar datos antes de enviar comandos
+        validarDatosTarea(tipo, fecha, nombre, descripcion);
+
         enviarComando("String(1)");
         enviarComando("Enter()");
         sincronizar();
@@ -343,34 +356,66 @@ public class Mainframe3270 {
         sincronizar();
     }
 
+    private void validarDatosTarea(int tipo, String fecha, String nombre, String descripcion) {
+        if (tipo != TIPO_GENERAL && tipo != TIPO_ESPECIFICA) {
+            throw new IllegalArgumentException("Tipo de tarea no válido.");
+        }
+
+        if (fecha == null || fecha.isEmpty()) {
+            throw new IllegalArgumentException("La fecha no puede estar vacía.");
+        }
+
+        if (descripcion == null) {
+            throw new IllegalArgumentException("La descripción no puede ser nula.");
+        }
+
+        int limiteDescripcion = tipo == TIPO_GENERAL
+                ? MAX_DESCRIPCION_GENERAL
+                : MAX_DESCRIPCION_ESPECIFICA;
+        if (descripcion.length() > limiteDescripcion) {
+            throw new IllegalArgumentException(
+                "La descripción no puede superar los " + limiteDescripcion + " caracteres."
+            );
+        }
+
+        if (tipo == TIPO_ESPECIFICA
+                && nombre != null
+                && nombre.length() > MAX_NOMBRE_ESPECIFICA) {
+            throw new IllegalArgumentException(
+                "El nombre no puede superar los " + MAX_NOMBRE_ESPECIFICA + " caracteres."
+            );
+        }
+    }
+
     
     public void salir() throws IOException {
 
-    if (proceso == null || !proceso.isAlive()) {
-        return;
+        if (proceso == null || !proceso.isAlive()) {
+            return;
+        }
+
+        try {
+            enviarComando("String(0)");
+            enviarComando("Enter()");
+
+            // Damos tiempo al mainframe a procesar la salida
+            pausa(1000);
+
+        } finally {
+            proceso.destroy();
+        }
     }
-
-    try {
-        enviarComando("String(0)");
-        enviarComando("Enter()");
-
-        // Damos tiempo al mainframe a procesar la salida
-        pausa(1000);
-
-    } finally {
-        proceso.destroy();
-    }
-}
 
 
     // ---------------------------------------------------------------
-    // Parseo, convierte la pantalla cruda del terminal en una lista de tareas, aislando solo el último listado y quedándose con el tipo pedido.
+    // Parseo del listado de tareas, quedándose con el tipo pedido.
     // ---------------------------------------------------------------
     private List<String[]> parsearTareas(String pantalla, int tipoFiltro) {
         List<String[]> tareas = new ArrayList<>();
         String[] lineas = pantalla.split("\n");
 
-        // Localizar el FINAL del último bloque de tareas
+        // TOTAL TASK marca el final del listado. Las páginas anteriores se
+        // encuentran antes de ese marcador en la pantalla acumulada.
         int finBloque = -1;
         for (int i = lineas.length - 1; i >= 0; i--) {
             if (lineas[i].contains("TOTAL TASK")) {
@@ -380,20 +425,18 @@ public class Mainframe3270 {
         }
         if (finBloque == -1) return tareas;
 
-        // Va  pa atrás buscando el INICIO del bloque
-        int iniBloque = finBloque;
-        for (int i = finBloque - 1; i >= 0; i--) {
-            String l = lineas[i].trim();
-            if (l.startsWith("TASK ")) {
+        // Buscar la primera tarea del listado acumulado. No se busca hacia
+        // atrás desde TOTAL TASK porque las páginas están separadas por More...
+        int iniBloque = -1;
+        for (int i = 0; i < finBloque; i++) {
+            if (lineas[i].trim().startsWith("TASK ")) {
                 iniBloque = i;
-            } else if (l.isEmpty()) {
-                continue;
-            } else {
                 break;
             }
         }
+        if (iniBloque == -1) return tareas;
 
-        // Parsear SOLO ese bloque y filtrar por tipo
+        // Recorrer todas las páginas hasta el TOTAL TASK final.
         for (int i = iniBloque; i < finBloque; i++) {
             String linea = lineas[i].trim();
             if (!linea.startsWith("TASK ")) continue;
@@ -425,6 +468,9 @@ public class Mainframe3270 {
             String taskStr = (endMarker > 0)
                     ? cuerpo.substring(startMarker, endMarker).trim()
                     : cuerpo.substring(startMarker).trim();
+
+            // El sistema recibe los espacios como "_"; se muestran como espacios en la aplicación.
+            taskStr = taskStr.replace('_', ' ');
 
             // Parsear la tarea
             String[] partes = taskStr.split("\\s+");

@@ -126,7 +126,6 @@ public class MainWindow extends JFrame {
         cardLayout.show(contenedorPrincipal, "TAREAS");
     }
 
-    //FIXME temporal
     private void iniciarSesion() {
         // Chequear campos
         // userID
@@ -279,23 +278,28 @@ public class MainWindow extends JFrame {
             return;
         }
 
-        if (descripcion.getText().length() > 80) {
+        int tipo = cmbTipo.getSelectedIndex() == 0
+                ? Mainframe3270.TIPO_GENERAL
+                : Mainframe3270.TIPO_ESPECIFICA;
+
+        int limiteDescripcion = tipo == Mainframe3270.TIPO_GENERAL
+                ? Mainframe3270.MAX_DESCRIPCION_GENERAL
+                : Mainframe3270.MAX_DESCRIPCION_ESPECIFICA;
+        if (descripcion.getText().length() > limiteDescripcion) {
             JOptionPane.showMessageDialog(
                 this,
-                "La descripción no puede superar los 80 caracteres."
+                "La descripción no puede superar los "
+                    + limiteDescripcion + " caracteres."
             );
             return;
         }
 
-
-                int tipo = cmbTipo.getSelectedIndex() == 0
-                ? Mainframe3270.TIPO_GENERAL
-                : Mainframe3270.TIPO_ESPECIFICA;
-
-        if (tipo == Mainframe3270.TIPO_ESPECIFICA && nombre.getText().length() > 80) {
+        if (tipo == Mainframe3270.TIPO_ESPECIFICA
+                && nombre.getText().length() > Mainframe3270.MAX_NOMBRE_ESPECIFICA) {
             JOptionPane.showMessageDialog(
                 this,
-                "El nombre no puede superar los 80 caracteres."
+                "El nombre no puede superar los "
+                    + Mainframe3270.MAX_NOMBRE_ESPECIFICA + " caracteres."
             );
             return;
         }
