@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Practica3.iml" filepath="$PROJECT_DIR$/Practica3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tess4J-3.4.8-src/Tess4J-3.4.8-src.iml" filepath="$PROJECT_DIR$/Tess4J-3.4.8-src/Tess4J-3.4.8-src.iml" />
+    </modules>
+  </component>
+</project>
