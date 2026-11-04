@@ -32,4 +32,10 @@ public class LegacyProcessManager {
     public boolean estaActivo() {
         return procesoDosBox != null && procesoDosBox.isAlive();
     }
+
+    public void cerrarAplicacionLegada() {
+        if (procesoDosBox != null && procesoDosBox.isAlive()) {
+            procesoDosBox.destroy();
+        }
+    }
 }

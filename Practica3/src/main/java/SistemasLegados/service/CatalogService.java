@@ -10,6 +10,7 @@
 
 package main.java.SistemasLegados.service;
 
+import main.java.SistemasLegados.model.Programa;
 import main.java.SistemasLegados.wrapper.LegacyAppBridge;
 
 public class CatalogService {
@@ -22,5 +23,9 @@ public class CatalogService {
 
     public int getTotalRegistros() {
         return bridge.obtenerNumeroRegistros();
+    }
+
+    public Programa buscarProgramaPorNombre(String nombre) {
+        return bridge.buscarProgramaPorNombre(nombre);
     }
 }

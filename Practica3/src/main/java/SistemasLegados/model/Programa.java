@@ -40,8 +40,6 @@ public class Programa {
     private TipoPrograma tipo;
     private String cinta;
 
-    
-
     public Programa(Integer registro, String nombre, String tipo, String cinta) {
         this.numeroRegistro = registro;
         this.nombre = nombre;
@@ -63,5 +61,16 @@ public class Programa {
 
     public String getCinta() {
         return cinta;
+    }
+
+    // Para depuración y pruebas, devuelve una representación en cadena del objeto Programa
+    @Override
+    public String toString() {
+        return "Programa{" +
+                "numeroRegistro=" + numeroRegistro +
+                ", nombre='" + nombre + '\'' +
+                ", tipo=" + tipo +
+                ", cinta='" + cinta + '\'' +
+                '}';
     }
 }

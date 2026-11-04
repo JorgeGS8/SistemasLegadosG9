@@ -60,6 +60,9 @@ public class LegacyAppBridge {
             robot.pulsarEnter();
             robot.esperar(1000);
 
+            // Cerrar la aplicación legada
+            processManager.cerrarAplicacionLegada();
+
             int numRegistros = ocrParser.extraerNumeroRegistros(texto);
             System.out.println("Bridge: Registros encontrados -> " + numRegistros);
             return numRegistros;
@@ -67,6 +70,71 @@ public class LegacyAppBridge {
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
+        } finally {
+            cerrojo.unlock(); // Liberar SIEMPRE SI NO BOMBOCLAT
+        }
+    }
+
+    public Programa buscarProgramaPorNombre(
+        String programaBuscado
+    ) {
+        // Bloquear para que nadie toque DOSBox
+        cerrojo.lock();
+        try {
+            System.out.println("Bridge: Solicitando datos del programa...");
+
+            // Arrancar
+            processManager.iniciarAplicacionLegada();
+            Thread.sleep(6000); // Un poco de delay (no lo he probado sin porq funciona pero se podria probar)
+
+            // Pantalla completa con alt y enter para q lo lea perfecto todo
+            Robot r = new Robot();
+            r.keyPress(KeyEvent.VK_ALT);
+            r.keyPress(KeyEvent.VK_ENTER);
+            r.keyRelease(KeyEvent.VK_ENTER);
+            r.keyRelease(KeyEvent.VK_ALT);
+            Thread.sleep(3000);
+
+            r.keyPress(KeyEvent.VK_ESCAPE);
+            r.keyRelease(KeyEvent.VK_ESCAPE);
+            Thread.sleep(1000);
+
+            // Elegir la opción 7
+            robot.escribirTexto("7");
+            robot.esperar(3000);
+
+            // Elegir el programa con su nombre
+            // Saltar peticion de nº registro
+            robot.escribirTexto("N");
+            robot.pulsarEnter();
+            robot.esperar(1000);
+            // Elegir el programa con su nombre
+            robot.escribirTexto(programaBuscado);
+            robot.pulsarEnter();
+            robot.esperar(2000);
+
+            // Capturar y hacer OCR
+            capturer.capturarPantallaLegada("captura_bridge.png");
+            String texto = ocrParser.extraerTexto("captura_bridge.png");
+
+            // Salir de la opción 4 con 3 Enter
+            robot.pulsarEnter();
+            robot.pulsarEnter();
+            robot.pulsarEnter();
+            robot.esperar(1000);
+
+            Programa programa = ocrParser.extraerDatosPrograma(texto);
+
+
+            //FIXME BORRAR LUEGO
+            System.out.println("Bridge: Texto OCR -> " + texto);
+
+
+            System.out.println("Bridge: Programa encontrado -> " + programa);
+            return programa;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al buscar programa por nombre: ", e);
         } finally {
             cerrojo.unlock(); // Liberar SIEMPRE SI NO BOMBOCLAT
         }

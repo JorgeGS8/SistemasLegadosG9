@@ -10,6 +10,7 @@ public class Main {
             CatalogService servicio = new CatalogService();
             int total = servicio.getTotalRegistros();
             System.out.println("úmero de registros: " + total);
+            servicio.buscarProgramaPorNombre("COMBAT ZONE");
 
 
         } catch (Exception e) {
