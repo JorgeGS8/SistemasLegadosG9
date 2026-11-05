@@ -38,8 +38,20 @@ public class CatalogService {
         return bridge.buscarProgramaPorNombre(nombre);
     }
 
+    public List<Programa> filtrarProgramasPorCinta(List<Programa> programas, String cintaBuscada) {
+        return programas.stream()
+                .filter(p -> p.getCinta().contains(cintaBuscada))
+                .toList();
+    }
+
     public List<Programa> buscarProgramasOrdenadosPorCinta(String cintaBuscada) {
-        List<Programa> programas = bridge.buscarProgramasPorCinta(cintaBuscada);
+        List<Programa> programas = bridge.leerTodosLosProgramas();
+        programas = filtrarProgramasPorCinta(programas, cintaBuscada);
+        return ordenarProgramasPorAntiguedad(programas);
+    }
+
+    public List<Programa> leerTodosLosProgramas(String cintaBuscada) {
+        List<Programa> programas = bridge.leerTodosLosProgramas();
         return ordenarProgramasPorAntiguedad(programas);
     }
 }

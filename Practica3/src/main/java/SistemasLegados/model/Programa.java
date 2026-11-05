@@ -11,7 +11,8 @@ public class Programa {
         SIMULADOR("SIMULADOR"),
         JUEGO_DE_MESA("JUEGO DE MESA"),
         S_DEPORTIVO("S. DEPORTIVO"),
-        ESTRATEGIA("ESTRATEGIA");
+        ESTRATEGIA("ESTRATEGIA"),
+        DESCONOCIDO("----");
 
         private final String valorExterno;
 

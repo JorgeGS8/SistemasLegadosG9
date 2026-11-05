@@ -16,7 +16,7 @@ public class LegacyAppBridge {
     private LegacyProcessManager processManager;
     private InputRobot robot;
     private ScreenCaptureService capturer;
-    private OcrParserService ocrParser;
+    private final OcrParserService ocrParser;
 
     // Cerrojo para que no colapsen varias teclas a la vez
     private static final ReentrantLock cerrojo = new ReentrantLock();
@@ -131,9 +131,9 @@ public class LegacyAppBridge {
             Programa programa = ocrParser.extraerDatosPrograma(texto);
 
             //FIXME BORRAR LUEGO
-            System.out.println("Bridge: Texto OCR -> " + texto);
+            //System.out.println("Bridge: Texto OCR -> " + texto);
 
-            System.out.println("Bridge: Programa encontrado -> " + programa);
+            //System.out.println("Bridge: Programa encontrado -> " + programa);
             return programa;
 
         } catch (Exception e) {
@@ -143,6 +143,7 @@ public class LegacyAppBridge {
         }
     }
 
+    // FIXME NO FUNCIONA BORRE EL METODO DE BUSCAR CINTA ESTABA MAL
     public List<Programa> buscarProgramasPorCinta(
         String cintaBuscada
     ) {
@@ -184,11 +185,11 @@ public class LegacyAppBridge {
                 String texto = ocrParser.extraerTexto("captura_bridge.png");
 
                 // DEBUG FIXME
-                System.out.println("Bridge: Texto OCR -> " + texto);
+                //System.out.println("Bridge: Texto OCR -> " + texto);
 
                 fin = ocrParser.esFinDeLista(texto);
                 if (!fin) {
-                    programas.addAll((ocrParser.extraerProgramasPorCinta(texto, cintaBuscada)));
+                    //programas.addAll((ocrParser.extraerProgramasPorCinta(texto, cintaBuscada)));
 
                     // Pasar a la siguiente pantalla
                     robot.pulsarEspacio();
@@ -200,12 +201,85 @@ public class LegacyAppBridge {
             processManager.cerrarAplicacionLegada();
 
             //DEBUG FIXME
-            System.out.println("Bridge: Programas encontrados -> " + programas.size());
+            //System.out.println("Bridge: Programas encontrados -> " + programas.size());
 
             // Listar programas ( numero + programa.toString() )
             int i = 1;
             for (Programa p : programas) {
-                System.out.println("Bridge: Programa" + i + "-> " + p);
+                //System.out.println("Bridge: Programa" + i + "-> " + p);
+                i++;
+            }
+
+            return programas;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al buscar programas por cinta: ", e);
+        } finally {
+            cerrojo.unlock(); // Liberar SIEMPRE SI NO BOMBOCLAT
+        }
+    }
+
+    public List<Programa> leerTodosLosProgramas() {
+        // Bloquear para que nadie toque DOSBox
+        cerrojo.lock();
+        try {
+            System.out.println("Bridge: Solicitando datos del programa...");
+
+            // Arrancar
+            processManager.iniciarAplicacionLegada();
+            Thread.sleep(6000); // Un poco de delay (no lo he probado sin porq funciona pero se podria probar)
+
+            // Pantalla completa con alt y enter para q lo lea perfecto todo
+            Robot r = new Robot();
+            r.keyPress(KeyEvent.VK_ALT);
+            r.keyPress(KeyEvent.VK_ENTER);
+            r.keyRelease(KeyEvent.VK_ENTER);
+            r.keyRelease(KeyEvent.VK_ALT);
+            Thread.sleep(3000);
+
+            r.keyPress(KeyEvent.VK_ESCAPE);
+            r.keyRelease(KeyEvent.VK_ESCAPE);
+            Thread.sleep(1000);
+
+            // Elegir la opción 6
+            robot.escribirTexto("6");
+            robot.esperar(3000);
+
+            // Saltar primer menu
+            robot.pulsarEnter();
+            robot.esperar(500);
+
+            // Mientras haya programas seguir leyendo y guardando en una lista
+            boolean fin = false;
+            List<Programa> programas = new ArrayList<>();
+            while (!fin) {
+                // Capturar y hacer OCR
+                capturer.capturarPantallaLegada("captura_bridge.png");
+                String texto = ocrParser.extraerTexto("captura_bridge.png");
+
+                // DEBUG FIXME
+                //System.out.println("Bridge: Texto OCR -> " + texto);
+
+                fin = ocrParser.esFinDeLista(texto);
+                if (!fin) {
+                    programas.addAll((ocrParser.leerPagina("captura_bridge.png")));
+
+                    // Pasar a la siguiente pantalla
+                    robot.pulsarEspacio();
+                    robot.esperar(300);
+                }
+            }
+
+            // Cerrar la aplicación legada
+            processManager.cerrarAplicacionLegada();
+
+            //DEBUG FIXME
+            //System.out.println("Bridge: Programas encontrados -> " + programas.size());
+
+            // Listar programas ( numero + programa.toString() )
+            int i = 1;
+            for (Programa p : programas) {
+                //System.out.println("Bridge: Programa" + i + "-> " + p);
                 i++;
             }
 
