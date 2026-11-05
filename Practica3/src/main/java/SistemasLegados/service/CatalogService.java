@@ -13,6 +13,9 @@ package main.java.SistemasLegados.service;
 import main.java.SistemasLegados.model.Programa;
 import main.java.SistemasLegados.wrapper.LegacyAppBridge;
 
+import java.util.Comparator;
+import java.util.List;
+
 public class CatalogService {
 
     private LegacyAppBridge bridge;
@@ -21,11 +24,22 @@ public class CatalogService {
         this.bridge = new LegacyAppBridge();
     }
 
+    public List<Programa> ordenarProgramasPorAntiguedad(List<Programa> programas) {
+        return programas.stream()
+                .sorted(Comparator.comparing(Programa::getNumeroRegistro))
+                .toList();
+    }
+
     public int getTotalRegistros() {
         return bridge.obtenerNumeroRegistros();
     }
 
     public Programa buscarProgramaPorNombre(String nombre) {
         return bridge.buscarProgramaPorNombre(nombre);
+    }
+
+    public List<Programa> buscarProgramasOrdenadosPorCinta(String cintaBuscada) {
+        List<Programa> programas = bridge.buscarProgramasPorCinta(cintaBuscada);
+        return ordenarProgramasPorAntiguedad(programas);
     }
 }
