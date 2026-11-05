@@ -16,7 +16,7 @@ public class Main {
             //Programa programa = servicio.buscarProgramaPorNombre("COMBAT ZONE");
             //System.out.println("Programa encontrado: " + programa);
             //servicio.buscarProgramasOrdenadosPorCinta("A");
-            List<Programa> programas = servicio.buscarProgramasOrdenadosPorCinta("A");
+            List<Programa> programas = servicio.buscarProgramasOrdenadosPorCinta("1");
             System.out.println("Programas encontrados en cinta A:");
             for (Programa programa : programas) {
                 System.out.println(programa + "\n");

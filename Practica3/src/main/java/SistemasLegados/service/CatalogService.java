@@ -13,6 +13,7 @@ package main.java.SistemasLegados.service;
 import main.java.SistemasLegados.model.Programa;
 import main.java.SistemasLegados.wrapper.LegacyAppBridge;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -39,9 +40,25 @@ public class CatalogService {
     }
 
     public List<Programa> filtrarProgramasPorCinta(List<Programa> programas, String cintaBuscada) {
+        if (cintaBuscada == null || cintaBuscada.isEmpty()) {
+            throw new IllegalArgumentException("La cinta buscada no puede ser nula o vacía.");
+        }
+
+        String objetivo = cintaBuscada.toUpperCase();
+
         return programas.stream()
-                .filter(p -> p.getCinta().contains(cintaBuscada))
+                .filter(p -> p.getCinta() != null && perteneceACinta(p.getCinta(), objetivo))
                 .toList();
+    }
+
+    private boolean perteneceACinta(String cintaRegistro, String cintaBuscada) {
+        // Si la cinta es "A-45", split("-") genera ["A", "45"]
+        // Si la cinta es "18", split("-") genera ["18"]
+        String[] cintas = cintaRegistro.split("-");
+
+        return Arrays.stream(cintas)
+                .map(String::trim)
+                .anyMatch(c -> c.equalsIgnoreCase(cintaBuscada));
     }
 
     public List<Programa> buscarProgramasOrdenadosPorCinta(String cintaBuscada) {
