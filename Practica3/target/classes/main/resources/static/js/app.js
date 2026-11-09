@@ -71,7 +71,7 @@ function renderTabla(programas) {
         </table>`;
 }
 
-/* --- Buscar por nombre --- */
+/* Buscar por nombre */
 document.getElementById('form-nombre').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button');
@@ -94,7 +94,7 @@ document.getElementById('form-nombre').addEventListener('submit', async (e) => {
     }
 });
 
-/* --- Listar por cinta --- */
+/* Listar por cinta */
 document.getElementById('form-cinta').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button');

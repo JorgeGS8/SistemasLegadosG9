@@ -35,7 +35,7 @@ public class ApiController {
         int total = catalogService.getTotalRegistros();
         if (total < 0) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "No se pudo leer el número de registros (OCR falló)"));
+                    .body(Map.of("error", "No se pudo leer el número de registros culpa del OCR"));
         }
         return ResponseEntity.ok(Map.of("total", total));
     }
@@ -67,7 +67,7 @@ public class ApiController {
         List<Programa> programas = catalogService
                 .buscarProgramasOrdenadosPorCinta(cinta.trim().toUpperCase());
 
-        // Filtrar entradas basura que a veces produce el OCR
+        // Filtrar entradas basura que a veces produce el OCR, HAY q mirarlo mejor porq para filtrar por B falla un poco
         List<Programa> validos = programas.stream()
                 .filter(p -> p.getNumeroRegistro() != null && p.getNumeroRegistro() > 0)
                 .filter(p -> p.getNombre() != null && !p.getNombre().isBlank())

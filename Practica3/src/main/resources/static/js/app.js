@@ -36,7 +36,7 @@ async function cargarNumeroRegistros() {
         numRegistrosEl.textContent = data.total;
     } catch (e) {
         numRegistrosEl.textContent = '--';
-        mostrarEstado('No se pudo obtener el número de registros: ' + e.message, 'error');
+        mostrarEstado('No se ha podido obtener el número de registros: ' + e.message, 'error');
     }
 }
 
@@ -79,7 +79,7 @@ document.getElementById('form-nombre').addEventListener('submit', async (e) => {
     if (!nombre) return;
 
     resultadoEl.innerHTML = '';
-    mostrarEstado('Buscando programa en la aplicación legada… (puede tardar ~20 s)', 'info');
+    mostrarEstado('Buscando el programa...', 'info');
     setCargando(btn, true);
     try {
         const res = await fetch('/api/programas?nombre=' + encodeURIComponent(nombre));
@@ -102,7 +102,7 @@ document.getElementById('form-cinta').addEventListener('submit', async (e) => {
     if (!cinta) return;
 
     resultadoEl.innerHTML = '';
-    mostrarEstado('Leyendo todos los programas y filtrando por cinta… (puede tardar bastante)', 'info');
+    mostrarEstado('Leyendo los programas...', 'info');
     setCargando(btn, true);
     try {
         const res = await fetch('/api/cintas/' + encodeURIComponent(cinta) + '/programas');
