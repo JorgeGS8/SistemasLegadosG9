@@ -1,5 +1,5 @@
 // Modelado de la clase Programa
-package main.java.SistemasLegados.model;
+package SistemasLegados.model;
 
 public class Programa {
 

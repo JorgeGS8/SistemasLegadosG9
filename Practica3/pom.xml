@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>grupo9</groupId>
+    <artifactId>sistemas-legados</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>sistemas-legados</name>
+    <description>Practica 3 Sistemas Legados</description>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Spring Boot Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Thymeleaf para las vistas -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- Tess4J de la practica -->
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>3.4.8</version>
+            <scope>system</scope>
+            <!--  .jar del Tess4J -->
+            <systemPath>${project.basedir}/Tess4J-3.4.8-src/Tess4J/dist/tess4j-3.4.8.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>4.1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Tess4J-3.4.8-src/Tess4J/lib/jna-4.1.0.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ghost4j</groupId>
+            <artifactId>lept4j</artifactId>
+            <version>1.6.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Tess4J-3.4.8-src/Tess4J/lib/lept4j-1.6.4.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.jai-imageio</groupId>
+            <artifactId>jai-imageio-core</artifactId>
+            <version>1.4.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Tess4J-3.4.8-src/Tess4J/lib/jai-imageio-core-1.4.0.jar</systemPath>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- .jar local en el ejecutable final -->
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -2,9 +2,9 @@
 // (para que dos usuarios en la web no envíen teclas a la vez), pulsa las teclas necesarias,
 // captura la pantalla, parsea el texto y devuelve la información lista a la capa de servicio.
 
-package main.java.SistemasLegados.wrapper;
+package SistemasLegados.wrapper;
 
-import main.java.SistemasLegados.model.Programa;
+import SistemasLegados.model.Programa;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;

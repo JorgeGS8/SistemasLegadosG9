@@ -1,7 +1,7 @@
-package main.java.SistemasLegados;
+package SistemasLegados;
 
-import main.java.SistemasLegados.model.Programa;
-import main.java.SistemasLegados.service.CatalogService;
+import SistemasLegados.model.Programa;
+import SistemasLegados.service.CatalogService;
 
 import java.util.List;
 

@@ -8,10 +8,10 @@
 // pertenece tanto a la cinta "A" como a la "45").
 
 
-package main.java.SistemasLegados.service;
+package SistemasLegados.service;
 
-import main.java.SistemasLegados.model.Programa;
-import main.java.SistemasLegados.wrapper.LegacyAppBridge;
+import SistemasLegados.model.Programa;
+import SistemasLegados.wrapper.LegacyAppBridge;
 
 import java.util.Arrays;
 import java.util.Comparator;

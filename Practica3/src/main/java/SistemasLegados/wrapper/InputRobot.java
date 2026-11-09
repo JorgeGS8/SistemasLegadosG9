@@ -1,4 +1,4 @@
-package main.java.SistemasLegados.wrapper;
+package SistemasLegados.wrapper;
 
 // Traduce comandos de alto nivel (como "escribe 'F-15' y pulsa ENTER") a secuencias
 // de eventos de teclado de bajo nivel (Robot)

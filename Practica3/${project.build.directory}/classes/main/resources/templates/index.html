@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo9_Catálogo ZX Spectrum</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>Catálogo de programas · ZX Spectrum</h1>
+    <section class="resumen-registros">
+        <span>Número de registros:</span>
+        <span id="num-registros">--</span>
+        <button id="btn-refrescar-registros" title="Recargar contador">↻</button>
+    </section>
+</header>
+
+<main>
+    <section class="busqueda">
+        <h2>Buscar programa por nombre</h2>
+        <form id="form-nombre">
+            <input type="text" id="input-nombre" placeholder="Ej.: COMBAT ZONE" required>
+            <button type="submit">Buscar</button>
+        </form>
+    </section>
+
+    <section class="busqueda">
+        <h2>Listar programas por cinta</h2>
+        <form id="form-cinta">
+            <input type="text" id="input-cinta" placeholder="Ej.: A o 45" required>
+            <button type="submit">Listar</button>
+        </form>
+    </section>
+
+    <section id="estado" class="estado" hidden></section>
+    <section id="resultado" class="resultado"></section>
+</main>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

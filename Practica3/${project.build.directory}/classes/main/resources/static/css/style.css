@@ -1,0 +1,114 @@
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f4f4;
+    color: #222;
+}
+
+header {
+    background: #1f3a5f;
+    color: #fff;
+    padding: 20px 24px;
+}
+header h1 {
+    margin: 0 0 12px 0;
+    font-size: 1.5em;
+}
+.resumen-registros {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 1.3em;
+}
+#num-registros {
+    font-size: 1.6em;
+    font-weight: bold;
+    min-width: 2ch;
+}
+#btn-refrescar-registros {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.5);
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: .9em;
+}
+#btn-refrescar-registros:hover { background: rgba(255,255,255,.15); }
+
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.busqueda {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+}
+.busqueda h2 { margin: 0 0 10px 0; font-size: 1.15em; }
+
+form { display: flex; gap: 10px; }
+input[type="text"] {
+    flex: 1;
+    padding: 9px 12px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+button {
+    padding: 9px 18px;
+    font-size: 1em;
+    background: #1f3a5f;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover { background: #2a4a75; }
+button:disabled { background: #888; cursor: not-allowed; }
+
+.estado {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    background: #fff3cd;
+    border: 1px solid #ffe08a;
+    color: #664d03;
+}
+.estado.error { background: #f8d7da; border-color: #f1aeb5; color: #842029; }
+.estado.ok    { background: #d1e7dd; border-color: #a3cfbb; color: #0f5132; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    border-radius: 6px;
+    overflow: hidden;
+}
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #1f3a5f; color: #fff; font-weight: 600; }
+tbody tr:hover td { background: #f7f9fc; }
+
+.detalle {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    padding: 18px 22px;
+}
+.detalle h3 { margin: 0 0 14px 0; }
+.detalle dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 8px 14px;
+}
+.detalle dt { font-weight: bold; color: #555; }
+.detalle dd { margin: 0; }

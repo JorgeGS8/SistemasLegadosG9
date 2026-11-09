@@ -1,7 +1,7 @@
 // Pasa la imagen capturada por el motor OCR y procesa el bloque de texto crudo resultante
 // mediante reglas y filtros de texto, limpiando errores típicos del reconocimiento y
 // transformando líneas de texto en objetos estructurados.
-package main.java.SistemasLegados.wrapper;
+package SistemasLegados.wrapper;
 
 import net.sourceforge.tess4j.Tesseract;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import main.java.SistemasLegados.model.Programa;
+import SistemasLegados.model.Programa;
 
 import javax.imageio.ImageIO;
 
